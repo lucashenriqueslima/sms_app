@@ -6,13 +6,44 @@ import 'package:sms_app/pages/user_page.dart';
 import 'package:sms_app/widgets/home/categories_item_widget.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key, this.welcomeUser = false}) : super(key: key);
+
+  final bool welcomeUser;
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  _showSnackbar() {
+    if (widget.welcomeUser) {
+      return ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            duration: const Duration(seconds: 2),
+            elevation: 10.0,
+            content: const Text(
+              'Seja bem-vindo!',
+              textAlign: TextAlign.center,
+            ),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
+            ),
+            backgroundColor: Theme.of(context).colorScheme.primary),
+      );
+    }
+
+    return;
+  }
+
+  @override
+  void initState() {
+    Future.delayed(const Duration(milliseconds: 200), () {
+      _showSnackbar();
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

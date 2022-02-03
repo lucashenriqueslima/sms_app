@@ -6,9 +6,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 class AmostragemModel with ChangeNotifier {
-  final String? _idUser;
-  final int? _levelUser;
   List<AmostragemClass> _items = [];
+  final String createTable =
+      "CREATE TABLE amostragem (localId TEXT PRIMARY KEY, idAmostragem TEXT, cod_barras TEXT, ensaio TEXT, serie TEXT, tag TEXT, sub_estacao TEXT, tipo TEXT, potencia TEXT, tensao TEXT, temp_amostra TEXT, temp_enrolamento TEXT, temp_equipamento TEXT, temp_ambiente TEXT, umidade_relativa TEXT, observacao TEXT, equipamento_energizado BOOLEAN, nao_conformidade TEXT)";
 
   List<AmostragemClass> get items => [..._items];
 
@@ -16,20 +16,18 @@ class AmostragemModel with ChangeNotifier {
     return _items.length;
   }
 
-  AmostragemModel([this._levelUser, this._idUser, this._items = const []]);
-
   Future<void> loadAmostragem(pa) async {
     _items.clear();
 
     final response = await http.get(
-      Uri.parse('${ApiRoutes.BASE_URL}/getamostragemdataforamostragem?pa=$pa'),
+      Uri.parse('${ApiRoutes.BASE_URL}/getdataforamostragem?pa=$pa'),
     );
 
     Map<String, dynamic> data = jsonDecode(response.body);
 
-    data["data"].forEach((LocalId, AmostragemData) {
+    await data["data"].forEach((AmostragemData) {
       _items.add(AmostragemClass(
-        localId: LocalId,
+        localId: '1',
         idAmostragem: pa,
         cod_barras: AmostragemData["cod_barras"],
         ensaio: AmostragemData["ensaio"],
@@ -44,4 +42,19 @@ class AmostragemModel with ChangeNotifier {
 
     notifyListeners();
   }
+
+  // Future<void> saveAmostragem() async {
+  //   Db.insert(createTable, "amostragem", {
+  //     'localId:'
+  //     'idAmostragem:'
+  //     'cod_barras:'
+  //     'ensaio:'
+  //     'serie:'
+  //     'tag:'
+  //     'sub_estacao:'
+  //     'tipo:'
+  //     'potencia:'
+  //     'tensao:'
+  //   });
+  // }
 }

@@ -1,30 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:sms_app/models/amostragem_model.dart';
-import 'package:sms_app/models/plano_amostragem_model.dart';
+import 'package:provider/provider.dart';
+import 'package:sms_app/widgets/amostragem/amostragem_list_item_widget.dart';
 import 'package:sms_app/widgets/global/app_bar_widget.dart';
-import 'package:provider/provider.dart';
-import 'package:sms_app/widgets/plano_amostragem/plano_amostragem_list_item_widget.dart';
-import 'package:provider/provider.dart';
+import '../models/amostragem_model.dart';
 
-class PlanoAmostragemListPage extends StatefulWidget {
-  const PlanoAmostragemListPage({Key? key}) : super(key: key);
+class AmostragemListPage extends StatefulWidget {
+  const AmostragemListPage({Key? key, required this.paId}) : super(key: key);
+
+  final dynamic paId;
 
   @override
-  State<PlanoAmostragemListPage> createState() =>
-      _PlanoAmostragemListPageState();
+  _AmostragemListPageState createState() => _AmostragemListPageState();
 }
 
-class _PlanoAmostragemListPageState extends State<PlanoAmostragemListPage> {
+class _AmostragemListPageState extends State<AmostragemListPage> {
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
 
-    Provider.of<PlanoAmostragemModel>(
+    Provider.of<AmostragemModel>(
       context,
       listen: false,
-    ).loadPlanoAmostragem().then((value) {
+    ).loadAmostragem(widget.paId).then((value) {
       setState(() {
         _isLoading = false;
       });
@@ -32,15 +31,14 @@ class _PlanoAmostragemListPageState extends State<PlanoAmostragemListPage> {
   }
 
   Future<void> _refreshPlanoAmostragem(BuildContext context) {
-    return Provider.of<PlanoAmostragemModel>(
+    return Provider.of<AmostragemModel>(
       context,
       listen: false,
-    ).loadPlanoAmostragem();
+    ).loadAmostragem(widget.paId);
   }
 
   @override
   Widget build(BuildContext context) {
-    PlanoAmostragemModel planoData = Provider.of(context);
     AmostragemModel amostragemData = Provider.of(context);
 
     return Scaffold(
@@ -56,13 +54,13 @@ class _PlanoAmostragemListPageState extends State<PlanoAmostragemListPage> {
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: ListView.builder(
-                  itemCount: planoData.itemsCount,
+                  itemCount: amostragemData.itemsCount,
                   itemBuilder: (ctx, index) {
                     return Card(
                         elevation: 4,
                         margin: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: PlanoAmostragemListItemWidget(
-                          dataPlano: planoData.items[index],
+                        child: AmostragemListItemWidget(
+                          data: amostragemData.items[index],
                         ));
                   },
                 ),

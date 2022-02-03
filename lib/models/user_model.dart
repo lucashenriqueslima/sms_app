@@ -95,6 +95,4 @@ class UserModel with ChangeNotifier {
   Future<void> deleteUser() async {
     Db.deleteData(createTable, "DELETE FROM user");
   }
-
-  Future getDataUser() async {}
 }

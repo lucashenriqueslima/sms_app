@@ -56,7 +56,10 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const HomePage()),
+        MaterialPageRoute(
+            builder: (context) => const HomePage(
+                  welcomeUser: true,
+                )),
         (Route<dynamic> route) => false);
   }
 
@@ -154,6 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         obscureText: true,
+                        onFieldSubmitted: (_) => _login(),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(

@@ -34,15 +34,8 @@ class MyApp extends StatelessWidget {
             );
           },
         ),
-        ChangeNotifierProxyProvider<UserModel, AmostragemModel>(
+        ChangeNotifierProvider(
           create: (_) => AmostragemModel(),
-          update: (ctx, user, previous) {
-            return AmostragemModel(
-              user.level ?? 0,
-              user.id ?? '0',
-              previous?.items ?? [],
-            );
-          },
         )
       ],
       child: MaterialApp(
@@ -81,13 +74,13 @@ class MyApp extends StatelessWidget {
                   color: Colors.white,
                 ),
                 headline3: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 20,
                   fontFamily: 'Raleway',
                   color: Colors.black,
                 ),
                 subtitle2: TextStyle(
                   fontFamily: 'RobotoCondesed',
-                  color: Colors.grey[700],
+                  color: Colors.grey[600],
                   fontSize: 12,
                 ),
               ),
