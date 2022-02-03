@@ -4,12 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:sms_app/models/amostragem_model.dart';
 
 class ListItemWidget extends StatelessWidget {
-  ListItemWidget(
-      {Key? key, required this.dataPlano, required this.dataAmostragem})
-      : super(key: key);
+  ListItemWidget({Key? key, required this.dataPlano}) : super(key: key);
 
   final PlanoAmostragemClass dataPlano;
-  final AmostragemModel dataAmostragem;
 
   void startAmostragem() {}
 

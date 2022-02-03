@@ -65,7 +65,6 @@ class _PlanoAmostragemListPageState extends State<PlanoAmostragemListPage> {
                         margin: const EdgeInsets.symmetric(vertical: 4.0),
                         child: ListItemWidget(
                           dataPlano: planoData.items[index],
-                          dataAmostragem: amostragemData,
                         ));
                   },
                 ),

@@ -22,10 +22,25 @@ class AmostragemModel with ChangeNotifier {
     _items.clear();
 
     final response = await http.get(
-      Uri.parse('${ApiRoutes.BASE_URL}/getamostragemdata?pa=$pa'),
+      Uri.parse('${ApiRoutes.BASE_URL}/getamostragemdataforamostragem?pa=$pa'),
     );
 
     Map<String, dynamic> data = jsonDecode(response.body);
+
+    data["data"].forEach((LocalId, AmostragemData) {
+      _items.add(AmostragemClass(
+        localId: LocalId,
+        idAmostragem: pa,
+        cod_barras: AmostragemData["cod_barras"],
+        ensaio: AmostragemData["ensaio"],
+        serie: AmostragemData["SERIE"],
+        tag: AmostragemData["DESIGNACAO"],
+        sub_estacao: AmostragemData["SUBESTACAO"],
+        tipo: AmostragemData["DESC_EQUIP"],
+        potencia: AmostragemData["POTENCIA"],
+        tensao: AmostragemData["TENSAO"],
+      ));
+    });
 
     notifyListeners();
   }
