@@ -60,16 +60,16 @@ class PlanoAmostragemListItemWidget extends StatelessWidget {
                         listen: false,
                       )
                           .loadAmostragem(dataPlano.idPlanoAmostragem)
-                          .then((value) => Navigator.pop(context))
                           .then(
-                            (value) => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AmostragemListPage(
-                                    paId: dataPlano.idPlanoAmostragem),
-                              ),
-                            ),
-                          );
+                            (value) => Navigator.pop(context),
+                          )
+                          .then((value) =>
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => AmostragemListPage(
+                                            paId: dataPlano.idPlanoAmostragem,
+                                          )),
+                                  (Route<dynamic> route) => false));
                     },
                   ),
                 ],

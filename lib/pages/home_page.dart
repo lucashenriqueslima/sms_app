@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
             ),
             children: [
               CategoriesItemWidget(
-                title: 'Executar Amostragem',
+                title: 'Executar Plano de Amostragem',
                 icon: Icon(
                   Icons.bloodtype_rounded,
                   color: Theme.of(context).colorScheme.primary,

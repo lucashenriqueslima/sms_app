@@ -1,14 +1,12 @@
 import 'package:sms_app/class/amostragem_class.dart';
 import 'package:http/http.dart' as http;
-import 'package:sms_app/db/Db.dart';
+import 'package:sms_app/db/db.dart';
 import '../utils/api_routes.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
 class AmostragemModel with ChangeNotifier {
   List<AmostragemClass> _items = [];
-  final String createTable =
-      "CREATE TABLE amostragem (localId TEXT PRIMARY KEY, idAmostragem TEXT, cod_barras TEXT, ensaio TEXT, serie TEXT, tag TEXT, sub_estacao TEXT, tipo TEXT, potencia TEXT, tensao TEXT, temp_amostra TEXT, temp_enrolamento TEXT, temp_equipamento TEXT, temp_ambiente TEXT, umidade_relativa TEXT, observacao TEXT, equipamento_energizado BOOLEAN, nao_conformidade TEXT)";
 
   List<AmostragemClass> get items => [..._items];
 
@@ -18,6 +16,8 @@ class AmostragemModel with ChangeNotifier {
 
   Future<void> loadAmostragem(pa) async {
     _items.clear();
+    deleteAmostragem();
+    DB.update("UPDATE user SET status = 2");
 
     int localId = 0;
 
@@ -28,10 +28,10 @@ class AmostragemModel with ChangeNotifier {
     Map<String, dynamic> data = jsonDecode(response.body);
 
     await data["data"].forEach((AmostragemData) {
-      print(AmostragemData);
+      saveAmsotragem(localId, pa, data);
 
       _items.add(AmostragemClass(
-        localId: localId.toString(),
+        localIdAmostragem: localId.toString(),
         idAmostragem: pa,
         cod_barras: AmostragemData["cod_barras"],
         ensaio: AmostragemData["ensaio"],
@@ -49,18 +49,73 @@ class AmostragemModel with ChangeNotifier {
     notifyListeners();
   }
 
-  // Future<void> saveAmostragem() async {
-  //   Db.insert(createTable, "amostragem", {
-  //     'localId:'
-  //     'idAmostragem:'
-  //     'cod_barras:'
-  //     'ensaio:'
-  //     'serie:'
-  //     'tag:'
-  //     'sub_estacao:'
-  //     'tipo:'
-  //     'potencia:'
-  //     'tensao:'
-  //   });
-  // }
+  Future<void> reloadAmsotragem() async {
+    final localDataAmostragemBefore =
+        await DB.select("SELECT * FROM amostragemBefore");
+
+    final localDataAmostragemLater =
+        await DB.select("SELECT * FROM amostragemLater");
+
+    for (int i = 0; i <= localDataAmostragemBefore.length - 1; i++) {
+      _items.add(AmostragemClass(
+        localIdAmostragem: i.toString(),
+        idAmostragem: localDataAmostragemBefore[i]["idAmostragem"],
+        cod_barras: localDataAmostragemBefore[i]["cod_barras"],
+        ensaio: localDataAmostragemBefore[i]["ensaio"],
+        serie: localDataAmostragemBefore[i]["SERIE"],
+        tag: localDataAmostragemBefore[i]["DESIGNACAO"],
+        sub_estacao: localDataAmostragemBefore[i]["SUBESTACAO"],
+        tipo: localDataAmostragemBefore[i]["DESC_EQUIP"],
+        potencia: localDataAmostragemBefore[i]["POTENCIA"],
+        tensao: localDataAmostragemBefore[i]["TENSAO"],
+        temp_amostra: localDataAmostragemLater[i]["temp_amostra"],
+        temp_enrolamento: localDataAmostragemLater[i]["temp_enrolamento"],
+        temp_equipamento: localDataAmostragemLater[i]["temp_equipamento"],
+        temp_ambiente: localDataAmostragemLater[i]["temp_ambiente"],
+        umidade_relativa: localDataAmostragemLater[i]["umidade_relativa"],
+        observacao: localDataAmostragemLater[i]["observacao"],
+        equipamento_energizado: localDataAmostragemLater[i]
+            ["equipamento_energizado"],
+        nao_conformidade: localDataAmostragemLater[i]["nao_conformidade"],
+      ));
+    }
+  }
+
+  Future<void> saveAmsotragem(localIdAmostragem, pa, AmostragemData) async {
+    DB.insert("amostragemBefore", {
+      'localIdAmostragem': localIdAmostragem.toString(),
+      'idAmostragem': pa,
+      'cod_barras': AmostragemData["cod_barras"],
+      'ensaio': AmostragemData["ensaio"],
+      'serie': AmostragemData["SERIE"],
+      'tag': AmostragemData["DESIGNACAO"],
+      'sub_estacao': AmostragemData["SUBESTACAO"],
+      'tipo': AmostragemData["DESC_EQUIP"],
+      'potencia': AmostragemData["POTENCIA"],
+      'tensao': AmostragemData["TENSAO"],
+    });
+
+    DB.insert("amostragemLater", {
+      'localIdAmostragem': localIdAmostragem.toString(),
+      'temp_amostra': AmostragemData["temp_amostra"],
+      'temp_enrolamento': AmostragemData["temp_enrolamento"],
+      'temp_equipamento': AmostragemData["temp_equipamento"],
+      'temp_ambiente': AmostragemData["temp_ambiente"],
+      'umidade_relativa': AmostragemData["umidade_relativa"],
+      'observacao': AmostragemData["observacao"],
+      'equipamento_energizado': AmostragemData["equipamento_energizado"],
+      'nao_conformidade': AmostragemData["nao_conformidade"],
+    });
+  }
+
+  Future<void> finishAmostragem() async {
+    await deleteAmostragem();
+
+    DB.update("UPDATE user SET status = 1");
+  }
+
+  Future<void> deleteAmostragem() async {
+    DB.delete("DELETE FROM amostragemBefore");
+    DB.delete("DELETE FROM amostragemLater");
+  }
 }

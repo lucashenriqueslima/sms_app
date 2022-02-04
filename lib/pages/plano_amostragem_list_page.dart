@@ -45,7 +45,7 @@ class _PlanoAmostragemListPageState extends State<PlanoAmostragemListPage> {
 
     return Scaffold(
       appBar: AppBarWidget(
-        title: "Amostragens",
+        title: "Planos",
       ),
       body: _isLoading
           ? const Center(

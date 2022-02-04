@@ -1,5 +1,5 @@
 class AmostragemClass {
-  final String? localId;
+  final String? localIdAmostragem;
   final String? idAmostragem;
   final String? cod_barras;
   final String? ensaio;
@@ -19,7 +19,7 @@ class AmostragemClass {
   bool? nao_conformidade = false;
 
   AmostragemClass({
-    this.localId,
+    this.localIdAmostragem,
     this.idAmostragem,
     this.cod_barras,
     this.ensaio,

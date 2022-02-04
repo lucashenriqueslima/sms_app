@@ -1,4 +1,4 @@
-import '../db/Db.dart';
+import '../db/db.dart';
 import '../utils/api_routes.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -13,8 +13,6 @@ class UserModel with ChangeNotifier {
   int? _level;
   int? status;
   bool? remember;
-  final String createTable =
-      "CREATE TABLE user (id TEXT PRIMARY KEY, email TEXT, passwd TEXT, name TEXT, level INTEGER, status INTEGER, remember BOOLEAN)";
 
   int? get level {
     return _level;
@@ -65,7 +63,7 @@ class UserModel with ChangeNotifier {
   }
 
   redirectUser() async {
-    final userData = await Db.getData(createTable, "SELECT * FROM user");
+    final userData = await DB.select("SELECT * FROM user");
 
     if (userData.isEmpty) {
       return;
@@ -81,7 +79,7 @@ class UserModel with ChangeNotifier {
   }
 
   Future<void> saveUser(user, passwd, remember) async {
-    Db.insert(createTable, "user", {
+    DB.insert("user", {
       'id': user["cod_usuario"],
       'email': user["email"],
       'passwd': passwd,
@@ -93,6 +91,6 @@ class UserModel with ChangeNotifier {
   }
 
   Future<void> deleteUser() async {
-    Db.deleteData(createTable, "DELETE FROM user");
+    DB.delete("DELETE FROM user");
   }
 }

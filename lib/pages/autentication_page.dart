@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sms_app/db/db.dart';
 import 'package:sms_app/models/user_model.dart';
+import 'package:sms_app/pages/amostragem_list_page.dart';
 import 'package:sms_app/pages/home_page.dart';
 import 'package:sms_app/pages/login_page.dart';
 import 'package:sms_app/widgets/global/loader_widget.dart';
@@ -22,7 +24,10 @@ class AutenticationPage extends StatelessWidget {
             child: Text('Ocorreu um erro!'),
           );
         } else {
-          return redirect.status != 1 ? const LoginPage() : const HomePage();
+          if (redirect.status == 1) return const HomePage();
+          if (redirect.status == 2)
+            return const AmostragemListPage(reloaded: true);
+          return const LoginPage();
         }
       },
     );

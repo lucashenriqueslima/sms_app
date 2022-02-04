@@ -78,6 +78,11 @@ class MyApp extends StatelessWidget {
                   fontFamily: 'RobotoCondesed',
                   color: Colors.black,
                 ),
+                headline5: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                    fontFamily: 'RobotCondesed',
+                    fontWeight: FontWeight.w300),
                 subtitle2: TextStyle(
                   fontFamily: 'RobotoCondesed',
                   color: Colors.grey[600],
