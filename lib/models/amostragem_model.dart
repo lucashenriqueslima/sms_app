@@ -19,6 +19,8 @@ class AmostragemModel with ChangeNotifier {
   Future<void> loadAmostragem(pa) async {
     _items.clear();
 
+    int localId = 0;
+
     final response = await http.get(
       Uri.parse('${ApiRoutes.BASE_URL}/getdataforamostragem?pa=$pa'),
     );
@@ -26,8 +28,10 @@ class AmostragemModel with ChangeNotifier {
     Map<String, dynamic> data = jsonDecode(response.body);
 
     await data["data"].forEach((AmostragemData) {
+      print(AmostragemData);
+
       _items.add(AmostragemClass(
-        localId: '1',
+        localId: localId.toString(),
         idAmostragem: pa,
         cod_barras: AmostragemData["cod_barras"],
         ensaio: AmostragemData["ensaio"],
@@ -38,6 +42,8 @@ class AmostragemModel with ChangeNotifier {
         potencia: AmostragemData["POTENCIA"],
         tensao: AmostragemData["TENSAO"],
       ));
+
+      localId++;
     });
 
     notifyListeners();

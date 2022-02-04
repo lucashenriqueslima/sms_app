@@ -75,7 +75,7 @@ class MyApp extends StatelessWidget {
                 ),
                 headline3: const TextStyle(
                   fontSize: 20,
-                  fontFamily: 'Raleway',
+                  fontFamily: 'RobotoCondesed',
                   color: Colors.black,
                 ),
                 subtitle2: TextStyle(
