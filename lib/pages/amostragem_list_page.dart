@@ -88,22 +88,23 @@ class _AmostragemListPageState extends State<AmostragemListPage> {
                   ),
                 ),
                 ElevatedButton.icon(
-                    icon: const Icon(
-                      Icons.done,
-                      size: 28,
+                  icon: const Icon(
+                    Icons.done,
+                    size: 28,
+                  ),
+                  label: Text('Concluir Amostragem',
+                      style: Theme.of(context).textTheme.headline5),
+                  style: ElevatedButton.styleFrom(
+                    primary: Theme.of(context).colorScheme.primaryVariant,
+                    elevation: 0,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    fixedSize: const Size(10, 45),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0),
                     ),
-                    label: Text('Concluir Amostragem',
-                        style: Theme.of(context).textTheme.headline5),
-                    style: ElevatedButton.styleFrom(
-                      primary: Theme.of(context).colorScheme.primaryVariant,
-                      elevation: 0,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      fixedSize: const Size(10, 45),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0),
-                      ),
-                    ),
-                    onPressed: _finishAmostragem),
+                  ),
+                  onPressed: _finishAmostragem,
+                ),
               ],
             ),
     );

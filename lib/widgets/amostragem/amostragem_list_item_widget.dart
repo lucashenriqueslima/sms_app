@@ -16,7 +16,7 @@ class AmostragemListItemWidget extends StatelessWidget {
         leading: CircleAvatar(
           backgroundColor: Colors.grey[200],
           radius: 40,
-          child: const FittedBox(child: Icon(Icons.offline_bolt_outlined)),
+          child: Icon(Icons.offline_bolt_outlined),
         ),
         title: Text(
           "${data.serie} - ${data.tag}",
@@ -29,7 +29,10 @@ class AmostragemListItemWidget extends StatelessWidget {
             style: Theme.of(context).textTheme.subtitle2,
           ),
         ),
-        trailing: const Icon(Icons.arrow_forward_ios_rounded),
+        trailing: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          child: const Icon(Icons.arrow_forward_ios_rounded),
+        ),
         onTap: () {
           Navigator.push(
             context,

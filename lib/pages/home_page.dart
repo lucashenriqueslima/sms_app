@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
     if (widget.welcomeUser) {
       return ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            duration: const Duration(seconds: 2),
+            duration: const Duration(seconds: 3),
             elevation: 10.0,
             content: const Text(
               'Seja bem-vindo!',
@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
               CategoriesItemWidget(
                 title: 'Criar Plano de Amostragem',
                 icon: Icon(
-                  Icons.addchart,
+                  Icons.colorize_rounded,
                   color: Theme.of(context).colorScheme.primary,
                   size: 45,
                 ),

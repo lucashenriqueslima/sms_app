@@ -120,8 +120,18 @@ class _LoginPageState extends State<LoginPage> {
                 Form(
                   child: Column(
                     children: [
+                      TextField(
+                        decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.blue.shade100,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            )),
+                      ),
                       TextFormField(
                         controller: _emailInput,
+                        textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(
                           hintStyle: TextStyle(fontSize: 15.0),
                           filled: true,

@@ -37,6 +37,9 @@ class _AmostragemMainPageState extends State<AmostragemMainPage> {
   }
 
   _selectScreen(int index) {
+    if (index == 0) {
+      print(index);
+    }
     setState(() {
       _selectedScreenIndex = index;
     });
@@ -47,8 +50,24 @@ class _AmostragemMainPageState extends State<AmostragemMainPage> {
     AmostragemModel amostragemData = Provider.of(context);
 
     return Scaffold(
-      appBar: AppBarWidget(
-        title: _titles[_selectedScreenIndex],
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.secondaryVariant,
+        iconTheme: IconThemeData(
+          color: Theme.of(context).colorScheme.primary, //change your color here
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.save_alt_rounded),
+            tooltip: 'Salvar Dados da Amostragem',
+            onPressed: () {},
+          ),
+        ],
+        elevation: 1,
+        title: Text(
+          _titles[_selectedScreenIndex],
+          style: Theme.of(context).textTheme.headline6,
+        ),
+        centerTitle: true,
       ),
       body: Container(
         color: Theme.of(context).colorScheme.secondary,
