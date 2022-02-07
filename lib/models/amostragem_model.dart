@@ -10,6 +10,10 @@ class AmostragemModel with ChangeNotifier {
 
   List<AmostragemClass> get items => [..._items];
 
+  AmostragemClass itemByIndex(int index) {
+    return _items[index];
+  }
+
   int get itemsCount {
     return _items.length;
   }
@@ -28,19 +32,19 @@ class AmostragemModel with ChangeNotifier {
     Map<String, dynamic> data = jsonDecode(response.body);
 
     await data["data"].forEach((AmostragemData) {
-      saveAmsotragem(localId, pa, data);
+      saveAmsotragem(localId, pa, AmostragemData);
 
       _items.add(AmostragemClass(
-        localIdAmostragem: localId.toString(),
+        localIdAmostragem: localId,
         idAmostragem: pa,
         cod_barras: AmostragemData["cod_barras"],
         ensaio: AmostragemData["ensaio"],
-        serie: AmostragemData["SERIE"],
-        tag: AmostragemData["DESIGNACAO"],
-        sub_estacao: AmostragemData["SUBESTACAO"],
-        tipo: AmostragemData["DESC_EQUIP"],
-        potencia: AmostragemData["POTENCIA"],
-        tensao: AmostragemData["TENSAO"],
+        serie: AmostragemData["SERIE"] ?? "Sem Informação",
+        tag: AmostragemData["DESIGNACAO"] ?? "Sem Informação",
+        sub_estacao: AmostragemData["SUBESTACAO"] ?? "Sem Informação",
+        tipo: AmostragemData["DESC_EQUIP"] ?? "Sem Informação",
+        potencia: AmostragemData["POTENCIA"] ?? "Sem Informação",
+        tensao: AmostragemData["TENSAO"] ?? "Sem Informação",
       ));
 
       localId++;
@@ -50,6 +54,8 @@ class AmostragemModel with ChangeNotifier {
   }
 
   Future<void> reloadAmsotragem() async {
+    _items.clear();
+
     final localDataAmostragemBefore =
         await DB.select("SELECT * FROM amostragemBefore");
 
@@ -57,17 +63,19 @@ class AmostragemModel with ChangeNotifier {
         await DB.select("SELECT * FROM amostragemLater");
 
     for (int i = 0; i <= localDataAmostragemBefore.length - 1; i++) {
+      print(localDataAmostragemBefore);
+
       _items.add(AmostragemClass(
-        localIdAmostragem: i.toString(),
+        localIdAmostragem: i,
         idAmostragem: localDataAmostragemBefore[i]["idAmostragem"],
         cod_barras: localDataAmostragemBefore[i]["cod_barras"],
         ensaio: localDataAmostragemBefore[i]["ensaio"],
-        serie: localDataAmostragemBefore[i]["SERIE"],
-        tag: localDataAmostragemBefore[i]["DESIGNACAO"],
-        sub_estacao: localDataAmostragemBefore[i]["SUBESTACAO"],
-        tipo: localDataAmostragemBefore[i]["DESC_EQUIP"],
-        potencia: localDataAmostragemBefore[i]["POTENCIA"],
-        tensao: localDataAmostragemBefore[i]["TENSAO"],
+        serie: localDataAmostragemBefore[i]["serie"],
+        tag: localDataAmostragemBefore[i]["tag"],
+        sub_estacao: localDataAmostragemBefore[i]["sub_estacao"],
+        tipo: localDataAmostragemBefore[i]["tipo"],
+        potencia: localDataAmostragemBefore[i]["potencia"],
+        tensao: localDataAmostragemBefore[i]["tensao"],
         temp_amostra: localDataAmostragemLater[i]["temp_amostra"],
         temp_enrolamento: localDataAmostragemLater[i]["temp_enrolamento"],
         temp_equipamento: localDataAmostragemLater[i]["temp_equipamento"],
@@ -79,11 +87,13 @@ class AmostragemModel with ChangeNotifier {
         nao_conformidade: localDataAmostragemLater[i]["nao_conformidade"],
       ));
     }
+
+    notifyListeners();
   }
 
   Future<void> saveAmsotragem(localIdAmostragem, pa, AmostragemData) async {
     DB.insert("amostragemBefore", {
-      'localIdAmostragem': localIdAmostragem.toString(),
+      'localIdAmostragem': localIdAmostragem,
       'idAmostragem': pa,
       'cod_barras': AmostragemData["cod_barras"],
       'ensaio': AmostragemData["ensaio"],
@@ -96,7 +106,7 @@ class AmostragemModel with ChangeNotifier {
     });
 
     DB.insert("amostragemLater", {
-      'localIdAmostragem': localIdAmostragem.toString(),
+      'localIdAmostragem': localIdAmostragem,
       'temp_amostra': AmostragemData["temp_amostra"],
       'temp_enrolamento': AmostragemData["temp_enrolamento"],
       'temp_equipamento': AmostragemData["temp_equipamento"],

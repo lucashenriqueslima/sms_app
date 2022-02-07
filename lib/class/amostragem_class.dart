@@ -1,5 +1,5 @@
 class AmostragemClass {
-  final String? localIdAmostragem;
+  final int localIdAmostragem;
   final String? idAmostragem;
   final String? cod_barras;
   final String? ensaio;
@@ -9,17 +9,17 @@ class AmostragemClass {
   final String? tipo;
   final String? potencia;
   final String? tensao;
-  String? temp_amostra = "Sem Informação";
-  String? temp_enrolamento = "Sem Informação";
-  String? temp_equipamento = "Sem Informação";
-  String? temp_ambiente = "Sem Informação";
-  String? umidade_relativa = "Sem Informação";
-  String? observacao = "Sem Informação";
+  String? temp_amostra;
+  String? temp_enrolamento;
+  String? temp_equipamento;
+  String? temp_ambiente;
+  String? umidade_relativa;
+  String? observacao;
   bool? equipamento_energizado = false;
   bool? nao_conformidade = false;
 
   AmostragemClass({
-    this.localIdAmostragem,
+    required this.localIdAmostragem,
     this.idAmostragem,
     this.cod_barras,
     this.ensaio,

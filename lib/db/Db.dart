@@ -72,7 +72,7 @@ CREATE TABLE user (
 
   String get _amostragemBefore => '''
 CREATE TABLE amostragemBefore (
-    localIdAmostragem TEXT PRIMARY KEY, 
+    localIdAmostragem INTEGER PRIMARY KEY, 
     idAmostragem TEXT, 
     cod_barras TEXT, 
     ensaio TEXT, 
@@ -86,7 +86,7 @@ CREATE TABLE amostragemBefore (
 
   String get _amostragemLater => '''
 CREATE TABLE amostragemLater(    
-    localIdAmostragem TEXT, 
+    localIdAmostragem INTEGER PRIMARY KEY, 
     temp_amostra TEXT, 
     temp_enrolamento TEXT, 
     temp_equipamento TEXT, 

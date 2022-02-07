@@ -35,7 +35,7 @@ class PlanoAmostragemListItemWidget extends StatelessWidget {
           subtitle: Padding(
             padding: const EdgeInsets.only(top: 4.0),
             child: Text(
-              "${dataPlano.amostrador} | ${dataPlano.dataPrevista ?? "Sem Informação"}",
+              "${dataPlano.amostrador} | ${dataPlano.dataPrevista}",
               style: Theme.of(context).textTheme.subtitle2,
             ),
           ),

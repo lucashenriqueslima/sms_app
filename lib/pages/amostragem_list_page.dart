@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sms_app/db/Db.dart';
 import 'package:sms_app/pages/home_page.dart';
 import 'package:sms_app/widgets/amostragem/amostragem_list_item_widget.dart';
 import 'package:sms_app/widgets/global/app_bar_widget.dart';
@@ -25,6 +26,7 @@ class _AmostragemListPageState extends State<AmostragemListPage> {
     super.initState();
 
     if (widget.reloaded) {
+      print("reloaded");
       Provider.of<AmostragemModel>(
         context,
         listen: false,
@@ -53,7 +55,7 @@ class _AmostragemListPageState extends State<AmostragemListPage> {
 
     Future<void> _finishAmostragem() async {
       await amostragemData.finishAmostragem();
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => const HomePage(),
@@ -78,7 +80,6 @@ class _AmostragemListPageState extends State<AmostragemListPage> {
                     itemBuilder: (ctx, index) {
                       return Card(
                         elevation: 4,
-                        margin: const EdgeInsets.symmetric(vertical: 4.0),
                         child: AmostragemListItemWidget(
                           data: amostragemData.items[index],
                         ),

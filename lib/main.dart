@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSwatch().copyWith(
               primary: Colors.lightBlue[700],
               secondary: Colors.white,
-              background: Colors.grey[100],
+              background: Colors.grey[200],
               secondaryVariant: Colors.grey[100]),
           textTheme: ThemeData.light().textTheme.copyWith(
                 headline6: TextStyle(
@@ -83,6 +83,11 @@ class MyApp extends StatelessWidget {
                     color: Colors.white,
                     fontFamily: 'RobotCondesed',
                     fontWeight: FontWeight.w300),
+                headline4: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontFamily: 'RobotCondesed',
+                ),
                 subtitle2: TextStyle(
                   fontFamily: 'RobotoCondesed',
                   color: Colors.grey[600],

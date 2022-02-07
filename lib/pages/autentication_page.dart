@@ -24,9 +24,13 @@ class AutenticationPage extends StatelessWidget {
             child: Text('Ocorreu um erro!'),
           );
         } else {
-          if (redirect.status == 1) return const HomePage();
-          if (redirect.status == 2)
+          if (redirect.status == 1) {
+            return const HomePage();
+          }
+          if (redirect.status == 2) {
             return const AmostragemListPage(reloaded: true);
+          }
+
           return const LoginPage();
         }
       },

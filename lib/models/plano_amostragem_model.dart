@@ -31,10 +31,13 @@ class PlanoAmostragemModel with ChangeNotifier {
       _items.add(
         PlanoAmostragemClass(
             idPlanoAmostragem: planoAmostragemData["id_plano_amostragem"],
-            razaoSocial: planoAmostragemData['RAZAO_SOCIAL'],
-            nomeFantasia: planoAmostragemData['NOME_FANTASIA'],
-            dataPrevista: planoAmostragemData['data_prevista_inicio'],
-            amostrador: planoAmostragemData['amostrador']),
+            razaoSocial:
+                planoAmostragemData['RAZAO_SOCIAL'] ?? "Sem Informação",
+            nomeFantasia:
+                planoAmostragemData['NOME_FANTASIA'] ?? "Sem Informação",
+            dataPrevista:
+                planoAmostragemData['data_prevista_inicio'] ?? "Sem Informação",
+            amostrador: planoAmostragemData['amostrador'] ?? "Sem Informação"),
       );
     });
     notifyListeners();

@@ -41,7 +41,6 @@ class _PlanoAmostragemListPageState extends State<PlanoAmostragemListPage> {
   @override
   Widget build(BuildContext context) {
     PlanoAmostragemModel planoData = Provider.of(context);
-    AmostragemModel amostragemData = Provider.of(context);
 
     return Scaffold(
       appBar: AppBarWidget(
