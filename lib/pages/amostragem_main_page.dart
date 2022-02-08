@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_app/models/amostragem_model.dart';
 import 'package:sms_app/pages/amostragem_info_page.dart';
-import 'package:sms_app/widgets/global/app_bar_widget.dart';
 import './amostragem_form_page.dart';
 
 class AmostragemMainPage extends StatefulWidget {
@@ -18,11 +17,6 @@ class AmostragemMainPage extends StatefulWidget {
 class _AmostragemMainPageState extends State<AmostragemMainPage> {
   int _selectedScreenIndex = 0;
 
-  final List<String> _titles = [
-    'Fomulário',
-    'Informações',
-  ];
-
   List<Widget> _screens = [];
 
   @override
@@ -37,9 +31,6 @@ class _AmostragemMainPageState extends State<AmostragemMainPage> {
   }
 
   _selectScreen(int index) {
-    if (index == 0) {
-      print(index);
-    }
     setState(() {
       _selectedScreenIndex = index;
     });
@@ -50,25 +41,6 @@ class _AmostragemMainPageState extends State<AmostragemMainPage> {
     AmostragemModel amostragemData = Provider.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.secondaryVariant,
-        iconTheme: IconThemeData(
-          color: Theme.of(context).colorScheme.primary, //change your color here
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.save_alt_rounded),
-            tooltip: 'Salvar Dados da Amostragem',
-            onPressed: () {},
-          ),
-        ],
-        elevation: 1,
-        title: Text(
-          _titles[_selectedScreenIndex],
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        centerTitle: true,
-      ),
       body: Container(
         color: Theme.of(context).colorScheme.secondary,
         child: _screens[_selectedScreenIndex],

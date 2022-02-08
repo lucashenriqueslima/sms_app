@@ -63,8 +63,6 @@ class AmostragemModel with ChangeNotifier {
         await DB.select("SELECT * FROM amostragemLater");
 
     for (int i = 0; i <= localDataAmostragemBefore.length - 1; i++) {
-      print(localDataAmostragemBefore);
-
       _items.add(AmostragemClass(
         localIdAmostragem: i,
         idAmostragem: localDataAmostragemBefore[i]["idAmostragem"],
@@ -97,12 +95,12 @@ class AmostragemModel with ChangeNotifier {
       'idAmostragem': pa,
       'cod_barras': AmostragemData["cod_barras"],
       'ensaio': AmostragemData["ensaio"],
-      'serie': AmostragemData["SERIE"],
-      'tag': AmostragemData["DESIGNACAO"],
-      'sub_estacao': AmostragemData["SUBESTACAO"],
-      'tipo': AmostragemData["DESC_EQUIP"],
-      'potencia': AmostragemData["POTENCIA"],
-      'tensao': AmostragemData["TENSAO"],
+      'serie': AmostragemData["SERIE"] ?? "Sem Informação",
+      'tag': AmostragemData["DESIGNACAO"] ?? "Sem Informação",
+      'sub_estacao': AmostragemData["SUBESTACAO"] ?? "Sem Informação",
+      'tipo': AmostragemData["DESC_EQUIP"] ?? "Sem Informação",
+      'potencia': AmostragemData["POTENCIA"] ?? "Sem Informação",
+      'tensao': AmostragemData["TENSAO"] ?? "Sem Informação",
     });
 
     DB.insert("amostragemLater", {
@@ -117,6 +115,8 @@ class AmostragemModel with ChangeNotifier {
       'nao_conformidade': AmostragemData["nao_conformidade"],
     });
   }
+
+  Future<void> updateAmostragemById() async {}
 
   Future<void> finishAmostragem() async {
     await deleteAmostragem();
