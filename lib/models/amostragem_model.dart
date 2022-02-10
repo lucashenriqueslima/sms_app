@@ -6,20 +6,18 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 class AmostragemModel with ChangeNotifier {
-  List<AmostragemClass> _items = [];
-
-  List<AmostragemClass> get items => [..._items];
+  List<AmostragemClass> items = [];
 
   AmostragemClass itemByIndex(int index) {
-    return _items[index];
+    return items[index];
   }
 
   int get itemsCount {
-    return _items.length;
+    return items.length;
   }
 
   Future<void> loadAmostragem(pa) async {
-    _items.clear();
+    items.clear();
     deleteAmostragem();
     DB.update("UPDATE user SET status = 2");
 
@@ -34,18 +32,27 @@ class AmostragemModel with ChangeNotifier {
     await data["data"].forEach((AmostragemData) {
       saveAmsotragem(localId, pa, AmostragemData);
 
-      _items.add(AmostragemClass(
-        localIdAmostragem: localId,
-        idAmostragem: pa,
-        cod_barras: AmostragemData["cod_barras"],
-        ensaio: AmostragemData["ensaio"],
-        serie: AmostragemData["SERIE"] ?? "Sem Informação",
-        tag: AmostragemData["DESIGNACAO"] ?? "Sem Informação",
-        sub_estacao: AmostragemData["SUBESTACAO"] ?? "Sem Informação",
-        tipo: AmostragemData["DESC_EQUIP"] ?? "Sem Informação",
-        potencia: AmostragemData["POTENCIA"] ?? "Sem Informação",
-        tensao: AmostragemData["TENSAO"] ?? "Sem Informação",
-      ));
+      items.add(
+        AmostragemClass(
+            localIdAmostragem: localId,
+            idAmostragem: pa,
+            cod_barras: AmostragemData["cod_barras"],
+            ensaio: AmostragemData["ensaio"],
+            serie: AmostragemData["SERIE"] ?? "Sem Informação",
+            tag: AmostragemData["DESIGNACAO"] ?? "Sem Informação",
+            sub_estacao: AmostragemData["SUBESTACAO"] ?? "Sem Informação",
+            tipo: AmostragemData["DESC_EQUIP"] ?? "Sem Informação",
+            potencia: AmostragemData["POTENCIA"] ?? "Sem Informação",
+            tensao: AmostragemData["TENSAO"] ?? "Sem Informação",
+            statusAmostragemItem: 1,
+            temp_amostra: '',
+            temp_enrolamento: '',
+            temp_equipamento: '',
+            temp_ambiente: '',
+            umidade_relativa: '',
+            observacao: '',
+            equipamento_energizado: false),
+      );
 
       localId++;
     });
@@ -54,7 +61,7 @@ class AmostragemModel with ChangeNotifier {
   }
 
   Future<void> reloadAmsotragem() async {
-    _items.clear();
+    items.clear();
 
     final localDataAmostragemBefore =
         await DB.select("SELECT * FROM amostragemBefore");
@@ -63,7 +70,7 @@ class AmostragemModel with ChangeNotifier {
         await DB.select("SELECT * FROM amostragemLater");
 
     for (int i = 0; i <= localDataAmostragemBefore.length - 1; i++) {
-      _items.add(AmostragemClass(
+      items.add(AmostragemClass(
         localIdAmostragem: i,
         idAmostragem: localDataAmostragemBefore[i]["idAmostragem"],
         cod_barras: localDataAmostragemBefore[i]["cod_barras"],
@@ -74,15 +81,18 @@ class AmostragemModel with ChangeNotifier {
         tipo: localDataAmostragemBefore[i]["tipo"],
         potencia: localDataAmostragemBefore[i]["potencia"],
         tensao: localDataAmostragemBefore[i]["tensao"],
+        statusAmostragemItem: localDataAmostragemLater[i]
+            ["statusAmostragemItem"],
         temp_amostra: localDataAmostragemLater[i]["temp_amostra"],
         temp_enrolamento: localDataAmostragemLater[i]["temp_enrolamento"],
         temp_equipamento: localDataAmostragemLater[i]["temp_equipamento"],
         temp_ambiente: localDataAmostragemLater[i]["temp_ambiente"],
         umidade_relativa: localDataAmostragemLater[i]["umidade_relativa"],
         observacao: localDataAmostragemLater[i]["observacao"],
-        equipamento_energizado: localDataAmostragemLater[i]
-            ["equipamento_energizado"],
-        nao_conformidade: localDataAmostragemLater[i]["nao_conformidade"],
+        equipamento_energizado:
+            localDataAmostragemLater[i]["equipamento_energizado"] != 1
+                ? false
+                : true,
       ));
     }
 
@@ -105,18 +115,33 @@ class AmostragemModel with ChangeNotifier {
 
     DB.insert("amostragemLater", {
       'localIdAmostragem': localIdAmostragem,
-      'temp_amostra': AmostragemData["temp_amostra"],
-      'temp_enrolamento': AmostragemData["temp_enrolamento"],
-      'temp_equipamento': AmostragemData["temp_equipamento"],
-      'temp_ambiente': AmostragemData["temp_ambiente"],
-      'umidade_relativa': AmostragemData["umidade_relativa"],
-      'observacao': AmostragemData["observacao"],
-      'equipamento_energizado': AmostragemData["equipamento_energizado"],
-      'nao_conformidade': AmostragemData["nao_conformidade"],
+      'statusAmostragemItem': 1,
+      'temp_amostra': '',
+      'temp_enrolamento': '',
+      'temp_equipamento': '',
+      'temp_ambiente': '',
+      'umidade_relativa': '',
+      'observacao': '',
+      'equipamento_energizado': 0,
+      'nao_conformidade': '',
     });
   }
 
-  Future<void> updateAmostragemById() async {}
+  Future<void> updateAmostragemById(
+      statusAmostragemItem, localIdAmostragem, isOn) async {
+    // notifyListeners();
+
+    DB.update('''UPDATE amostragemLater 
+        SET statusAmostragemItem = $statusAmostragemItem, 
+        temp_amostra = '${itemByIndex(localIdAmostragem).temp_amostra}', 
+        temp_enrolamento = '${itemByIndex(localIdAmostragem).temp_enrolamento}', 
+        temp_equipamento = '${itemByIndex(localIdAmostragem).temp_equipamento}', 
+        temp_ambiente = '${itemByIndex(localIdAmostragem).temp_ambiente}', 
+        umidade_relativa = '${itemByIndex(localIdAmostragem).umidade_relativa}', 
+        observacao =  '${itemByIndex(localIdAmostragem).observacao}', 
+        equipamento_energizado = ${itemByIndex(localIdAmostragem).equipamento_energizado != true ? 0 : 1}
+        WHERE localIdAmostragem = $localIdAmostragem''');
+  }
 
   Future<void> finishAmostragem() async {
     await deleteAmostragem();

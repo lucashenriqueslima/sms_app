@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sms_app/db/Db.dart';
 import 'package:sms_app/pages/home_page.dart';
 import 'package:sms_app/widgets/amostragem/amostragem_list_item_widget.dart';
 import 'package:sms_app/widgets/global/app_bar_widget.dart';
 import '../models/amostragem_model.dart';
+import 'dart:io';
 
 class AmostragemListPage extends StatefulWidget {
   const AmostragemListPage({Key? key, this.paId, this.reloaded = false})
@@ -26,7 +26,6 @@ class _AmostragemListPageState extends State<AmostragemListPage> {
     super.initState();
 
     if (widget.reloaded) {
-      print("reloaded");
       Provider.of<AmostragemModel>(
         context,
         listen: false,
@@ -53,14 +52,64 @@ class _AmostragemListPageState extends State<AmostragemListPage> {
   Widget build(BuildContext context) {
     AmostragemModel amostragemData = Provider.of(context);
 
-    Future<void> _finishAmostragem() async {
-      await amostragemData.finishAmostragem();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomePage(),
-        ),
-      );
+    Future _finishAmostragem() async {
+      String internetConnectionText;
+      bool internetConnection = false;
+
+      try {
+        final result = await InternetAddress.lookup('google.com');
+        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+          internetConnection = true;
+          internetConnectionText = "*Conectado*";
+        }
+      } on SocketException catch (_) {
+        internetConnection = false;
+        internetConnectionText = "*Desconectado*";
+      }
+
+      if (internetConnection) {
+        return showDialog<bool>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Atenção'),
+            content: RichText(
+              text: TextSpan(
+                text: 'Deseja completar a amostragem? \n\n',
+                children: <TextSpan>[
+                  TextSpan(
+                      text: 'S', style: TextStyle(fontWeight: FontWeight.bold)),
+                  TextSpan(text: ' world!'),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                child: const Text('Não'),
+                onPressed: () => Navigator.of(ctx).pop(false),
+              ),
+              TextButton(
+                child: const Text('Sim'),
+                onPressed: () async {
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (context) => const AmostragemListPage(
+                                reloaded: true,
+                              )),
+                      (Route<dynamic> route) => false);
+                },
+              ),
+            ],
+          ),
+        );
+      }
+
+      // await amostragemData.finishAmostragem();
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => const HomePage(),
+      //   ),
+      // );
     }
 
     return Scaffold(

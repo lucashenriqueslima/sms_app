@@ -1,58 +1,94 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_app/models/amostragem_model.dart';
+
+import 'amostragem_list_page.dart';
 
 class AmostragemFormPage extends StatefulWidget {
   const AmostragemFormPage({
     Key? key,
+    required this.localIdAmostragem,
   }) : super(key: key);
 
-  void teste() {
-    print("funfa");
-  }
-
-  void saveData() {}
+  final int localIdAmostragem;
 
   @override
   State<AmostragemFormPage> createState() => _AmostragemFormPageState();
 }
 
 class _AmostragemFormPageState extends State<AmostragemFormPage> {
-  bool equipIsOn = false;
-
   final _formKey = GlobalKey<FormState>();
-  final _formData = Map<String, String?>();
 
-  @override
-  void dispose() {
-    super.dispose();
-    _formData['name'] = "123";
-    print("asda");
+  void submitForm() {
+    final isValid = _formKey.currentState?.validate() ?? false;
+
+    if (!isValid) {
+      return;
+    }
+
+    _formKey.currentState?.save();
+
+    Provider.of<AmostragemModel>(
+      context,
+      listen: false,
+    ).updateAmostragemById(2, widget.localIdAmostragem, true).then((_) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const AmostragemListPage(
+            reloaded: true,
+          ),
+        ),
+      );
+    });
+
+    // _formKey.currentState?.save();
   }
 
   @override
   Widget build(BuildContext context) {
     AmostragemModel amostragemData = Provider.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.secondaryVariant,
-        iconTheme: IconThemeData(
-          color: Theme.of(context).colorScheme.primary, //change your color here
-        ),
+        title: const Text("Formulário"),
+        centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.save_alt_rounded),
-            tooltip: 'Salvar Dados da Amostragem',
-            onPressed: () {},
-          ),
+            onPressed: submitForm,
+            icon: const Icon(Icons.check),
+          )
         ],
-        elevation: 1,
-        title: Text(
-          "Formulário",
-          style: Theme.of(context).textTheme.headline6,
+        leading: IconButton(
+          onPressed: () {
+            showDialog<bool>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text('Atenção'),
+                content: const Text(
+                    'Os dados referente a está amostragem não serão salvos, você tem certeza que deseja prosseguir?'),
+                actions: [
+                  TextButton(
+                    child: const Text('Não'),
+                    onPressed: () => Navigator.of(ctx).pop(false),
+                  ),
+                  TextButton(
+                    child: const Text('Sim'),
+                    onPressed: () async {
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => const AmostragemListPage(
+                                    reloaded: true,
+                                  )),
+                          (Route<dynamic> route) => false);
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
         ),
-        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -63,25 +99,23 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 20.0),
                 child: TextFormField(
-                  initialValue: _formData['name'],
-                  onFieldSubmitted: (name) {
-                    print(name);
+                  initialValue: amostragemData
+                      .itemByIndex(widget.localIdAmostragem)
+                      .temp_amostra,
+                  onSaved: (temp_amostra) => amostragemData
+                      .items[widget.localIdAmostragem]
+                      .temp_amostra = temp_amostra,
+                  validator: (_temp_amostra) {
+                    final temp_amostra = _temp_amostra ?? '';
+
+                    if (temp_amostra.contains('.')) {
+                      return 'Favor não utilizar "."';
+                    }
+
+                    return null;
                   },
-                  onSaved: (name) => _formData['name'] = name,
-                  // validator: (_name) {
-                  //   final name = _name ?? '';
-
-                  //   if (name.trim().isEmpty) {
-                  //     return 'Nome é obrigatório';
-                  //   }
-
-                  //   if (name.trim().length < 3) {
-                  //     return 'Nome precisa no mínimo de 3 letras.';
-                  //   }
-
-                  //   return null;
-                  // },
-                  keyboardType: TextInputType.numberWithOptions(decimal: false),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: false),
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     filled: true,
@@ -101,12 +135,63 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
                 ),
               ),
               Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: TextFormField(
+                  validator: (_temp_amostra) {
+                    final temp_amostra = _temp_amostra ?? '';
+
+                    if (temp_amostra.contains('.')) {
+                      return 'Favor não utilizar "."';
+                    }
+
+                    return null;
+                  },
+                  initialValue: amostragemData
+                      .itemByIndex(widget.localIdAmostragem)
+                      .temp_equipamento,
+                  onSaved: (temp_equipamento) => amostragemData
+                      .items[widget.localIdAmostragem]
+                      .temp_equipamento = temp_equipamento,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: false),
+                  textInputAction: TextInputAction.next,
+                  decoration: InputDecoration(
+                    filled: true,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                    fillColor: Colors.blue[50],
+                    labelText: 'Temp. Equipamento',
+                    suffixIcon: const Icon(Icons.takeout_dining_outlined),
+                  ),
+                ),
+              ),
+              Padding(
                 padding: const EdgeInsets.only(top: 15.0),
                 child: TextFormField(
-                  onFieldSubmitted: (value) {
-                    print("asd");
+                  validator: (_temp_amostra) {
+                    final temp_amostra = _temp_amostra ?? '';
+
+                    if (temp_amostra.contains('.')) {
+                      return 'Favor não utilizar "."';
+                    }
+
+                    return null;
                   },
-                  keyboardType: TextInputType.numberWithOptions(decimal: false),
+                  initialValue: amostragemData
+                      .itemByIndex(widget.localIdAmostragem)
+                      .temp_enrolamento,
+                  onSaved: (temp_enrolamento) => amostragemData
+                      .items[widget.localIdAmostragem]
+                      .temp_enrolamento = temp_enrolamento,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: false),
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     filled: true,
@@ -128,29 +213,23 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 20.0),
                 child: TextFormField(
-                  keyboardType: TextInputType.numberWithOptions(decimal: false),
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    filled: true,
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.primary),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
-                    ),
-                    fillColor: Colors.blue[50],
-                    labelText: 'Temp. Equipamento',
-                    suffixIcon: const Icon(Icons.takeout_dining_outlined),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: TextFormField(
-                  keyboardType: TextInputType.numberWithOptions(decimal: false),
+                  validator: (_temp_amostra) {
+                    final temp_amostra = _temp_amostra ?? '';
+
+                    if (temp_amostra.contains('.')) {
+                      return 'Favor não utilizar "."';
+                    }
+
+                    return null;
+                  },
+                  initialValue: amostragemData
+                      .itemByIndex(widget.localIdAmostragem)
+                      .temp_ambiente,
+                  onSaved: (temp_ambiente) => amostragemData
+                      .items[widget.localIdAmostragem]
+                      .temp_ambiente = temp_ambiente,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: false),
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     filled: true,
@@ -172,7 +251,23 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 20.0),
                 child: TextFormField(
-                  keyboardType: TextInputType.numberWithOptions(decimal: false),
+                  validator: (_temp_amostra) {
+                    final temp_amostra = _temp_amostra ?? '';
+
+                    if (temp_amostra.contains('.')) {
+                      return 'Favor não utilizar "."';
+                    }
+
+                    return null;
+                  },
+                  initialValue: amostragemData
+                      .itemByIndex(widget.localIdAmostragem)
+                      .umidade_relativa,
+                  onSaved: (umidade_relativa) => amostragemData
+                      .items[widget.localIdAmostragem]
+                      .umidade_relativa = umidade_relativa,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: false),
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     filled: true,
@@ -194,6 +289,11 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 20.0),
                 child: TextFormField(
+                  initialValue: amostragemData
+                      .itemByIndex(widget.localIdAmostragem)
+                      .observacao,
+                  onSaved: (observacao) => amostragemData
+                      .items[widget.localIdAmostragem].observacao = observacao,
                   textInputAction: TextInputAction.done,
                   maxLines: 5,
                   decoration: InputDecoration(
@@ -217,12 +317,17 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
                 padding: const EdgeInsets.only(top: 15.0, bottom: 20.00),
                 child: SwitchListTile(
                     controlAffinity: ListTileControlAffinity.leading,
-                    value: equipIsOn,
-                    secondary: Icon(Icons.battery_unknown_outlined),
-                    title: Text("Equipamento Energizado?"),
-                    onChanged: (bool value) {
+                    value: amostragemData
+                        .itemByIndex(widget.localIdAmostragem)
+                        .equipamento_energizado!,
+                    secondary: const Icon(Icons.battery_unknown_outlined),
+                    title: const Text("Equipamento Energizado?"),
+                    onChanged: (value) {
                       setState(() {
-                        equipIsOn = value;
+                        amostragemData
+                            .itemByIndex(widget.localIdAmostragem)
+                            .equipamento_energizado = value;
+                        amostragemData.notifyListeners();
                       });
                     }),
               )

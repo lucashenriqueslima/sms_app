@@ -49,7 +49,7 @@ class DB {
     return await openDatabase(
         join(
           await getDatabasesPath(),
-          "samplemanagersystem.db",
+          "samplemanagersystem2.db",
         ),
         version: 1,
         onCreate: _onCreate);
@@ -87,6 +87,7 @@ CREATE TABLE amostragemBefore (
   String get _amostragemLater => '''
 CREATE TABLE amostragemLater(    
     localIdAmostragem INTEGER PRIMARY KEY, 
+    statusAmostragemItem INTEGER,
     temp_amostra TEXT, 
     temp_enrolamento TEXT, 
     temp_equipamento TEXT, 

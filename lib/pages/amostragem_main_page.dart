@@ -15,25 +15,17 @@ class AmostragemMainPage extends StatefulWidget {
 }
 
 class _AmostragemMainPageState extends State<AmostragemMainPage> {
-  int _selectedScreenIndex = 0;
+  int? _selectedScreenIndex = 0;
 
-  List<Widget> _screens = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _screens = [
-      AmostragemFormPage(),
-      AmostragemInfoPage(
-        localIdAmostragem: widget.localIdAmostragem,
-      ),
-    ];
-  }
-
-  _selectScreen(int index) {
+  _selectScreen(int? index) {
     setState(() {
       _selectedScreenIndex = index;
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -42,16 +34,30 @@ class _AmostragemMainPageState extends State<AmostragemMainPage> {
 
     return Scaffold(
       body: Container(
-        color: Theme.of(context).colorScheme.secondary,
-        child: _screens[_selectedScreenIndex],
-      ),
+          color: Theme.of(context).colorScheme.secondary,
+          child: IndexedStack(
+            index: _selectedScreenIndex,
+            children: [
+              AmostragemFormPage(
+                localIdAmostragem: widget.localIdAmostragem,
+              ),
+              AmostragemInfoPage(
+                amostragemData:
+                    amostragemData.itemByIndex(widget.localIdAmostragem),
+              ),
+            ],
+          )),
       bottomNavigationBar: BottomNavigationBar(
+        landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
         onTap: _selectScreen,
+        selectedFontSize: 14,
+        selectedIconTheme: const IconThemeData(size: 30),
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
         backgroundColor: Theme.of(context).colorScheme.background,
         unselectedItemColor: Colors.grey[700],
         selectedItemColor: Theme.of(context).colorScheme.primary,
         elevation: 5,
-        currentIndex: _selectedScreenIndex,
+        currentIndex: _selectedScreenIndex ?? 0,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.list),

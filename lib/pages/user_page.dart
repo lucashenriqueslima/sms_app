@@ -88,6 +88,5 @@ class UserPage extends StatelessWidget {
         ),
       ),
     );
-    ;
   }
 }

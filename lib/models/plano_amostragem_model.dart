@@ -40,6 +40,8 @@ class PlanoAmostragemModel with ChangeNotifier {
             amostrador: planoAmostragemData['amostrador'] ?? "Sem Informação"),
       );
     });
+
+    print(items);
     notifyListeners();
   }
 }

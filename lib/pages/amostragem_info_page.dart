@@ -3,29 +3,16 @@ import 'package:provider/provider.dart';
 import 'package:sms_app/models/amostragem_model.dart';
 
 class AmostragemInfoPage extends StatelessWidget {
-  const AmostragemInfoPage({
-    Key? key,
-    required this.localIdAmostragem,
-  }) : super(key: key);
+  const AmostragemInfoPage({Key? key, required this.amostragemData})
+      : super(key: key);
 
-  final int localIdAmostragem;
+  final amostragemData;
 
   @override
   Widget build(BuildContext context) {
-    AmostragemModel amostragemData = Provider.of(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.secondaryVariant,
-        iconTheme: IconThemeData(
-          color: Theme.of(context).colorScheme.primary, //change your color here
-        ),
-        elevation: 1,
-        title: Text(
-          "Informações",
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        centerTitle: true,
-      ),
+          title: const Text("Informações"), centerTitle: true, leading: null),
       body: ListView(
         children: [
           Card(
@@ -38,8 +25,7 @@ class AmostragemInfoPage extends StatelessWidget {
                   style: Theme.of(context).textTheme.headline4,
                   children: <TextSpan>[
                     TextSpan(
-                      text:
-                          '${amostragemData.itemByIndex(localIdAmostragem).cod_barras}',
+                      text: '${amostragemData.cod_barras}',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -57,8 +43,7 @@ class AmostragemInfoPage extends StatelessWidget {
                   style: Theme.of(context).textTheme.headline4,
                   children: <TextSpan>[
                     TextSpan(
-                        text:
-                            '${amostragemData.itemByIndex(localIdAmostragem).ensaio}',
+                        text: '${amostragemData.ensaio}',
                         style: const TextStyle(fontWeight: FontWeight.bold)),
                   ],
                 ),
@@ -75,8 +60,7 @@ class AmostragemInfoPage extends StatelessWidget {
                   style: Theme.of(context).textTheme.headline4,
                   children: <TextSpan>[
                     TextSpan(
-                        text:
-                            '${amostragemData.itemByIndex(localIdAmostragem).serie}',
+                        text: '${amostragemData.serie}',
                         style: const TextStyle(fontWeight: FontWeight.bold)),
                   ],
                 ),
@@ -93,8 +77,7 @@ class AmostragemInfoPage extends StatelessWidget {
                   style: Theme.of(context).textTheme.headline4,
                   children: <TextSpan>[
                     TextSpan(
-                        text:
-                            '${amostragemData.itemByIndex(localIdAmostragem).tag}',
+                        text: '${amostragemData.tag}',
                         style: const TextStyle(fontWeight: FontWeight.bold)),
                   ],
                 ),
@@ -111,8 +94,7 @@ class AmostragemInfoPage extends StatelessWidget {
                   style: Theme.of(context).textTheme.headline4,
                   children: <TextSpan>[
                     TextSpan(
-                        text:
-                            '${amostragemData.itemByIndex(localIdAmostragem).sub_estacao}',
+                        text: '${amostragemData.sub_estacao}',
                         style: const TextStyle(fontWeight: FontWeight.bold)),
                   ],
                 ),
@@ -129,8 +111,7 @@ class AmostragemInfoPage extends StatelessWidget {
                   style: Theme.of(context).textTheme.headline4,
                   children: <TextSpan>[
                     TextSpan(
-                        text:
-                            '${amostragemData.itemByIndex(localIdAmostragem).tipo}',
+                        text: '${amostragemData.tipo}',
                         style: const TextStyle(fontWeight: FontWeight.bold)),
                   ],
                 ),
@@ -148,7 +129,7 @@ class AmostragemInfoPage extends StatelessWidget {
                   children: <TextSpan>[
                     TextSpan(
                         text:
-                            '${amostragemData.itemByIndex(localIdAmostragem).potencia!.replaceAll('.', ',')}0 kVA',
+                            '${amostragemData.potencia!.replaceAll('.', ',')}0 kVA',
                         style: const TextStyle(fontWeight: FontWeight.bold)),
                   ],
                 ),
@@ -166,7 +147,7 @@ class AmostragemInfoPage extends StatelessWidget {
                   children: <TextSpan>[
                     TextSpan(
                         text:
-                            '${amostragemData.itemByIndex(localIdAmostragem).tensao!.replaceAll('.', ',')}0 kVA',
+                            '${amostragemData.tensao!.replaceAll('.', ',')}0 kVA',
                         style: const TextStyle(fontWeight: FontWeight.bold)),
                   ],
                 ),

@@ -7,6 +7,35 @@ import 'package:sms_app/pages/amostragem_main_page.dart';
 class AmostragemListItemWidget extends StatelessWidget {
   AmostragemListItemWidget({Key? key, required this.data}) : super(key: key);
 
+  Color? backgroundColorCircleAvatar(statusAmostragem) {
+    if (statusAmostragem == 1) {
+      return Colors.grey[700];
+    }
+
+    return Colors.green[600];
+  }
+
+  Icon iconCircleAvatar(statusAmostragem) {
+    if (statusAmostragem == 0) {
+      return const Icon(
+        Icons.warning_amber_rounded,
+        size: 28,
+      );
+    }
+
+    if (statusAmostragem == 1) {
+      return const Icon(
+        Icons.double_arrow_rounded,
+        size: 28,
+      );
+    }
+
+    return const Icon(
+      Icons.check,
+      size: 28,
+    );
+  }
+
   final AmostragemClass data;
 
   @override
@@ -14,9 +43,10 @@ class AmostragemListItemWidget extends StatelessWidget {
     return ListTile(
         contentPadding: const EdgeInsets.all(5),
         leading: CircleAvatar(
-          backgroundColor: Colors.grey[200],
+          backgroundColor:
+              backgroundColorCircleAvatar(data.statusAmostragemItem),
           radius: 40,
-          child: Icon(Icons.offline_bolt_outlined),
+          child: iconCircleAvatar(data.statusAmostragemItem),
         ),
         title: Text(
           "${data.serie} - ${data.tag}",
@@ -29,12 +59,12 @@ class AmostragemListItemWidget extends StatelessWidget {
             style: Theme.of(context).textTheme.subtitle2,
           ),
         ),
-        trailing: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10.0),
-          child: const Icon(Icons.arrow_forward_ios_rounded),
+        trailing: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 10.0),
+          child: Icon(Icons.arrow_forward_ios_rounded),
         ),
         onTap: () {
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => AmostragemMainPage(

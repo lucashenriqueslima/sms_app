@@ -9,6 +9,7 @@ class AmostragemClass {
   final String? tipo;
   final String? potencia;
   final String? tensao;
+  int? statusAmostragemItem;
   String? temp_amostra;
   String? temp_enrolamento;
   String? temp_equipamento;
@@ -29,6 +30,7 @@ class AmostragemClass {
     this.tipo,
     this.potencia,
     this.tensao,
+    required this.statusAmostragemItem,
     this.temp_amostra,
     this.temp_enrolamento,
     this.temp_equipamento,
