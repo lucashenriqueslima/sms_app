@@ -3,11 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sms_app/models/amostragem_model.dart';
 import 'package:sms_app/models/plano_amostragem_model.dart';
 import 'package:sms_app/models/user_model.dart';
-import 'package:sms_app/pages/plano_amostragem_list_page.dart';
 import 'package:sms_app/pages/autentication_page.dart';
-import 'package:sms_app/pages/home_page.dart';
-import 'package:sms_app/pages/login_page.dart';
-import 'package:sms_app/pages/user_page.dart';
 
 void main() {
   runApp(MyApp());

@@ -36,6 +36,7 @@ class AmostragemModel with ChangeNotifier {
         AmostragemClass(
             localIdAmostragem: localId,
             idAmostragem: pa,
+            idEquipamento: AmostragemData["NUM_EQUIP"],
             cod_barras: AmostragemData["cod_barras"],
             ensaio: AmostragemData["ensaio"],
             serie: AmostragemData["SERIE"] ?? "Sem Informação",
@@ -73,6 +74,7 @@ class AmostragemModel with ChangeNotifier {
       items.add(AmostragemClass(
         localIdAmostragem: i,
         idAmostragem: localDataAmostragemBefore[i]["idAmostragem"],
+        idEquipamento: localDataAmostragemBefore[i]["idEquipamento"],
         cod_barras: localDataAmostragemBefore[i]["cod_barras"],
         ensaio: localDataAmostragemBefore[i]["ensaio"],
         serie: localDataAmostragemBefore[i]["serie"],
@@ -103,6 +105,7 @@ class AmostragemModel with ChangeNotifier {
     DB.insert("amostragemBefore", {
       'localIdAmostragem': localIdAmostragem,
       'idAmostragem': pa,
+      'idEquipamento': AmostragemData["NUM_EQUIP"],
       'cod_barras': AmostragemData["cod_barras"],
       'ensaio': AmostragemData["ensaio"],
       'serie': AmostragemData["SERIE"] ?? "Sem Informação",
@@ -143,7 +146,23 @@ class AmostragemModel with ChangeNotifier {
         WHERE localIdAmostragem = $localIdAmostragem''');
   }
 
-  Future<void> finishAmostragem() async {
+  void finishAmostragem(isOn) async {
+    // items.forEach((amostragemData, id) {
+    //   data[amostragemData.localIdAmostragem]["cod_plano_amostragem"] =
+    //       items[amostragemData.localIdAmostragem].localIdAmostragem;
+    // });
+
+    // print(itemsCount);
+
+    // if (isOn) {
+    //   http.post(
+    //     Uri.parse('${ApiRoutes.BASE_URL}/saveamostragembyplano'),
+    //     body: jsonEncode(items),
+    //   );
+
+    //   print(jsonEncode(items));
+    // }
+
     await deleteAmostragem();
 
     DB.update("UPDATE user SET status = 1");

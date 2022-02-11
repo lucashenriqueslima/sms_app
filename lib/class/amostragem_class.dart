@@ -1,6 +1,7 @@
 class AmostragemClass {
   final int localIdAmostragem;
-  final String? idAmostragem;
+  final String idAmostragem;
+  final String idEquipamento;
   final String? cod_barras;
   final String? ensaio;
   final String? serie;
@@ -21,7 +22,8 @@ class AmostragemClass {
 
   AmostragemClass({
     required this.localIdAmostragem,
-    this.idAmostragem,
+    required this.idAmostragem,
+    required this.idEquipamento,
     this.cod_barras,
     this.ensaio,
     this.serie,
