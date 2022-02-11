@@ -144,6 +144,8 @@ class AmostragemModel with ChangeNotifier {
   }
 
   Future<void> finishAmostragem() async {
+    items.clear();
+
     await deleteAmostragem();
 
     DB.update("UPDATE user SET status = 1");

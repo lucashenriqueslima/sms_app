@@ -50,7 +50,7 @@ class _AmostragemMainPageState extends State<AmostragemMainPage> {
       bottomNavigationBar: BottomNavigationBar(
         landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
         onTap: _selectScreen,
-        selectedFontSize: 14,
+        selectedFontSize: 13,
         selectedIconTheme: const IconThemeData(size: 30),
         selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
         backgroundColor: Theme.of(context).colorScheme.background,

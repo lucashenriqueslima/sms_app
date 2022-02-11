@@ -52,33 +52,49 @@ class _AmostragemListPageState extends State<AmostragemListPage> {
   Widget build(BuildContext context) {
     AmostragemModel amostragemData = Provider.of(context);
 
-    Future _finishAmostragem() async {
-      String internetConnectionText;
-      bool internetConnection = false;
-
+    Future<bool?> getConnection() async {
       try {
         final result = await InternetAddress.lookup('google.com');
         if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-          internetConnection = true;
-          internetConnectionText = "*Conectado*";
+          return true;
         }
       } on SocketException catch (_) {
-        internetConnection = false;
-        internetConnectionText = "*Desconectado*";
+        return false;
       }
+    }
 
-      if (internetConnection) {
+    Future _finishAmostragem() async {
+      final internetConnection = await getConnection();
+
+      if (internetConnection!) {
         return showDialog<bool>(
           context: context,
           builder: (ctx) => AlertDialog(
             title: const Text('Atenção'),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 15,
+              horizontal: 18,
+            ),
             content: RichText(
               text: TextSpan(
+                style: const TextStyle(
+                  color: Colors.black,
+                ),
                 text: 'Deseja completar a amostragem? \n\n',
                 children: <TextSpan>[
+                  const TextSpan(
+                    text: 'Status Conexão: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
                   TextSpan(
-                      text: 'S', style: TextStyle(fontWeight: FontWeight.bold)),
-                  TextSpan(text: ' world!'),
+                    text: "Conectado",
+                    style: TextStyle(
+                      color: Colors.green[800],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -90,18 +106,127 @@ class _AmostragemListPageState extends State<AmostragemListPage> {
               TextButton(
                 child: const Text('Sim'),
                 onPressed: () async {
-                  Navigator.of(context).pushAndRemoveUntil(
+                  amostragemData.finishAmostragem(internetConnection).then((_) {
+                    Navigator.pushReplacement(
+                      context,
                       MaterialPageRoute(
-                          builder: (context) => const AmostragemListPage(
-                                reloaded: true,
-                              )),
-                      (Route<dynamic> route) => false);
+                        builder: (context) => const HomePage(),
+                      ),
+                    );
+                  });
                 },
               ),
             ],
           ),
         );
       }
+
+      // try {
+      //   final result = await InternetAddress.lookup('google.com');
+      //   if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+      //     return showDialog<bool>(
+      //       context: context,
+      //       builder: (ctx) => AlertDialog(
+      //         title: const Text('Atenção'),
+      //         contentPadding: const EdgeInsets.symmetric(
+      //           vertical: 15,
+      //           horizontal: 18,
+      //         ),
+      //         content: RichText(
+      //           text: TextSpan(
+      //             style: const TextStyle(
+      //               color: Colors.black,
+      //             ),
+      //             text: 'Deseja completar a amostragem? \n\n',
+      //             children: <TextSpan>[
+      //               const TextSpan(
+      //                 text: 'Status Conexão: ',
+      //                 style: TextStyle(
+      //                   fontWeight: FontWeight.bold,
+      //                   color: Colors.black,
+      //                 ),
+      //               ),
+      //               TextSpan(
+      //                 text: "Conectado",
+      //                 style: TextStyle(
+      //                   color: Colors.green[800],
+      //                 ),
+      //               ),
+      //             ],
+      //           ),
+      //         ),
+      //         actions: [
+      //           TextButton(
+      //             child: const Text('Não'),
+      //             onPressed: () => Navigator.of(ctx).pop(false),
+      //           ),
+      //           TextButton(
+      //             child: const Text('Sim'),
+      //             onPressed: () async {
+      //               Navigator.of(context).pushAndRemoveUntil(
+      //                   MaterialPageRoute(
+      //                       builder: (context) => const AmostragemListPage(
+      //                             reloaded: true,
+      //                           )),
+      //                   (Route<dynamic> route) => false);
+      //             },
+      //           ),
+      //         ],
+      //       ),
+      //     );
+      //   }
+      // } on SocketException catch (_) {
+      //   return showDialog<bool>(
+      //     context: context,
+      //     builder: (ctx) => AlertDialog(
+      //       title: const Text('Atenção'),
+      //       contentPadding: const EdgeInsets.symmetric(
+      //         vertical: 15,
+      //         horizontal: 18,
+      //       ),
+      //       content: RichText(
+      //         text: TextSpan(
+      //           style: const TextStyle(
+      //             color: Colors.black,
+      //           ),
+      //           text: 'Deseja completar a amostragem? \n\n',
+      //           children: <TextSpan>[
+      //             const TextSpan(
+      //               text: 'Status Conexão: ',
+      //               style: TextStyle(
+      //                 fontWeight: FontWeight.bold,
+      //                 color: Colors.black,
+      //               ),
+      //             ),
+      //             TextSpan(
+      //               text: "Desconectado",
+      //               style: TextStyle(
+      //                 color: Colors.red[800],
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //       ),
+      //       actions: [
+      //         TextButton(
+      //           child: const Text('Não'),
+      //           onPressed: () => Navigator.of(ctx).pop(false),
+      //         ),
+      //         TextButton(
+      //           child: const Text('Sim'),
+      //           onPressed: () async {
+      //             Navigator.of(context).pushAndRemoveUntil(
+      //                 MaterialPageRoute(
+      //                     builder: (context) => const AmostragemListPage(
+      //                           reloaded: true,
+      //                         )),
+      //                 (Route<dynamic> route) => false);
+      //           },
+      //         ),
+      //       ],
+      //     ),
+      //   );
+      // }
 
       // await amostragemData.finishAmostragem();
       // Navigator.pushReplacement(
@@ -111,6 +236,8 @@ class _AmostragemListPageState extends State<AmostragemListPage> {
       //   ),
       // );
     }
+
+    Future sendOrDownloadAmostragem() async {}
 
     return Scaffold(
       appBar: AppBarWidget(
