@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:sms_app/class/plano_amostragem_class.dart';
-import 'package:sms_app/models/user_model.dart';
-import 'package:sms_app/pages/plano_amostragem_list_page.dart';
+import 'package:sms_app/pages/plano_amostragem_checkbox_list_page.dart';
 import 'package:sms_app/pages/user_page.dart';
 import 'package:sms_app/widgets/home/categories_item_widget.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, this.welcomeUser = false}) : super(key: key);
+  const HomePage({Key? key, this.alert = ''}) : super(key: key);
 
-  final bool welcomeUser;
+  final String alert;
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -16,13 +14,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   _showSnackbar() {
-    if (widget.welcomeUser) {
+    if (widget.alert != '') {
       return ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             duration: const Duration(seconds: 3),
             elevation: 10.0,
-            content: const Text(
-              'Seja bem-vindo!',
+            content: Text(
+              widget.alert,
               textAlign: TextAlign.center,
             ),
             behavior: SnackBarBehavior.floating,
@@ -98,7 +96,7 @@ class _HomePageState extends State<HomePage> {
                   color: Theme.of(context).colorScheme.primary,
                   size: 45,
                 ),
-                route: const PlanoAmostragemListPage(),
+                route: const PlanoAmostragemCheckboxListPage(),
               ),
               CategoriesItemWidget(
                 title: 'Amostrages Não Enviadas',

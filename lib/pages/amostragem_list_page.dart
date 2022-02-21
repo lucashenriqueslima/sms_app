@@ -29,7 +29,7 @@ class _AmostragemListPageState extends State<AmostragemListPage> {
       Provider.of<AmostragemModel>(
         context,
         listen: false,
-      ).reloadAmsotragem().then((value) {
+      ).reloadAmostragem().then((value) {
         setState(() {
           _isLoading = false;
         });
@@ -37,20 +37,13 @@ class _AmostragemListPageState extends State<AmostragemListPage> {
 
       return;
     }
-
-    Provider.of<AmostragemModel>(
-      context,
-      listen: false,
-    ).loadAmostragem(widget.paId).then((value) {
-      setState(() {
-        _isLoading = false;
-      });
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     AmostragemModel amostragemData = Provider.of(context);
+
+    var amostragemByPaId = amostragemData.itemsByPlanoAmostragem(widget.paId);
 
     Future<bool?> getConnection() async {
       try {
@@ -108,12 +101,9 @@ class _AmostragemListPageState extends State<AmostragemListPage> {
               child: const Text('Sim'),
               onPressed: () async {
                 amostragemData.finishAmostragem(internetConnection);
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const HomePage(),
-                  ),
-                );
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => const HomePage()),
+                    (Route<dynamic> route) => false);
               },
             ),
           ],
@@ -122,9 +112,7 @@ class _AmostragemListPageState extends State<AmostragemListPage> {
     }
 
     return Scaffold(
-      appBar: AppBarWidget(
-        title: "Amostragens",
-      ),
+      appBar: AppBarWidget(title: widget.paId.toString()),
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(),
@@ -134,12 +122,12 @@ class _AmostragemListPageState extends State<AmostragemListPage> {
               children: [
                 Expanded(
                   child: ListView.builder(
-                    itemCount: amostragemData.itemsCount,
+                    itemCount: amostragemByPaId.length,
                     itemBuilder: (ctx, index) {
                       return Card(
                         elevation: 4,
                         child: AmostragemListItemWidget(
-                          data: amostragemData.items[index],
+                          data: amostragemByPaId[index],
                         ),
                       );
                     },

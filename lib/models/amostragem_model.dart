@@ -16,6 +16,10 @@ class AmostragemModel with ChangeNotifier {
     return items.length;
   }
 
+  itemsByPlanoAmostragem(paId) {
+    return items.where((element) => element.idPlanoAmostragem == paId).toList();
+  }
+
   Future<void> loadAmostragem(pa) async {
     items.clear();
     deleteAmostragem();
@@ -29,13 +33,16 @@ class AmostragemModel with ChangeNotifier {
 
     Map<String, dynamic> data = jsonDecode(response.body);
 
+    print(data);
+
     await data["data"].forEach((AmostragemData) {
-      saveAmsotragem(localId, pa, AmostragemData);
+      saveAmsotragem(localId, AmostragemData);
 
       items.add(
         AmostragemClass(
             localIdAmostragem: localId,
-            idAmostragem: pa,
+            idPlanoAmostragem:
+                int.parse(AmostragemData["cod_plano_amostragem"]),
             idEquipamento: AmostragemData["NUM_EQUIP"],
             cod_barras: AmostragemData["cod_barras"],
             ensaio: AmostragemData["ensaio"],
@@ -61,7 +68,7 @@ class AmostragemModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> reloadAmsotragem() async {
+  Future<void> reloadAmostragem() async {
     items.clear();
 
     final localDataAmostragemBefore =
@@ -73,7 +80,7 @@ class AmostragemModel with ChangeNotifier {
     for (int i = 0; i <= localDataAmostragemBefore.length - 1; i++) {
       items.add(AmostragemClass(
         localIdAmostragem: i,
-        idAmostragem: localDataAmostragemBefore[i]["idAmostragem"],
+        idPlanoAmostragem: localDataAmostragemBefore[i]["idPlanoAmostragem"],
         idEquipamento: localDataAmostragemBefore[i]["idEquipamento"],
         cod_barras: localDataAmostragemBefore[i]["cod_barras"],
         ensaio: localDataAmostragemBefore[i]["ensaio"],
@@ -101,10 +108,10 @@ class AmostragemModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> saveAmsotragem(localIdAmostragem, pa, AmostragemData) async {
+  Future<void> saveAmsotragem(localIdAmostragem, AmostragemData) async {
     DB.insert("amostragemBefore", {
       'localIdAmostragem': localIdAmostragem,
-      'idAmostragem': pa,
+      'idPlanoAmostragem': int.parse(AmostragemData["cod_plano_amostragem"]),
       'idEquipamento': AmostragemData["NUM_EQUIP"],
       'cod_barras': AmostragemData["cod_barras"],
       'ensaio': AmostragemData["ensaio"],
@@ -131,10 +138,9 @@ class AmostragemModel with ChangeNotifier {
   }
 
   Future<void> updateAmostragemById(
-      statusAmostragemItem, localIdAmostragem, isOn) async {
-    // notifyListeners();
-
-    DB.update('''UPDATE amostragemLater 
+      statusAmostragemItem, localIdAmostragem) async {
+    if (statusAmostragemItem == 2) {
+      DB.update('''UPDATE amostragemLater 
         SET statusAmostragemItem = $statusAmostragemItem, 
         temp_amostra = '${itemByIndex(localIdAmostragem).temp_amostra}', 
         temp_enrolamento = '${itemByIndex(localIdAmostragem).temp_enrolamento}', 
@@ -143,6 +149,21 @@ class AmostragemModel with ChangeNotifier {
         umidade_relativa = '${itemByIndex(localIdAmostragem).umidade_relativa}', 
         observacao =  '${itemByIndex(localIdAmostragem).observacao}', 
         equipamento_energizado = ${itemByIndex(localIdAmostragem).equipamento_energizado != true ? 0 : 1}
+        WHERE localIdAmostragem = $localIdAmostragem''');
+
+      return;
+    }
+
+    DB.update('''
+UPDATE amostragemLater 
+        SET statusAmostragemItem = $statusAmostragemItem, 
+        temp_amostra = '', 
+        temp_enrolamento = '', 
+        temp_equipamento = '', 
+        temp_ambiente = '', 
+        umidade_relativa = '', 
+        observacao =  '', 
+        equipamento_energizado = 0 
         WHERE localIdAmostragem = $localIdAmostragem''');
   }
 

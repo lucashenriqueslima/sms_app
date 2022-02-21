@@ -1,5 +1,5 @@
 class PlanoAmostragemClass {
-  final String? idPlanoAmostragem;
+  final String idPlanoAmostragem;
   final String? razaoSocial;
   final String? nomeFantasia;
   String? dataPrevista = "Sem Informação";
@@ -11,5 +11,17 @@ class PlanoAmostragemClass {
     required this.nomeFantasia,
     this.dataPrevista,
     this.amostrador,
+  });
+}
+
+class PlanoAmostragemOnClass {
+  int idPlanoAmostragem;
+  String? subEstacao;
+  int equipamentoMissing;
+
+  PlanoAmostragemOnClass({
+    required this.idPlanoAmostragem,
+    this.subEstacao,
+    required this.equipamentoMissing,
   });
 }

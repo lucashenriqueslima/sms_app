@@ -5,6 +5,8 @@ import 'package:sms_app/models/plano_amostragem_model.dart';
 import 'package:sms_app/models/user_model.dart';
 import 'package:sms_app/pages/autentication_page.dart';
 
+import 'models/plano_amostragem_on_model.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -29,6 +31,9 @@ class MyApp extends StatelessWidget {
               previous?.items ?? [],
             );
           },
+        ),
+        ChangeNotifierProvider(
+          create: (_) => PlanoAmostragemOnModel(),
         ),
         ChangeNotifierProvider(
           create: (_) => AmostragemModel(),

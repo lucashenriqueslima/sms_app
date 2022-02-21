@@ -55,12 +55,10 @@ class _LoginPageState extends State<LoginPage> {
       );
     }
 
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-            builder: (context) => const HomePage(
-                  welcomeUser: true,
-                )),
-        (Route<dynamic> route) => false);
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => const HomePage(
+              alert: "Seja Bem-vindo,",
+            )));
   }
 
   @override
@@ -85,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 SizedBox(
-                  height: MediaQuery.of(context).size.height / 8,
+                  height: MediaQuery.of(context).size.height / 7,
                 ),
                 Align(
                   alignment: Alignment.center,

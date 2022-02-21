@@ -69,11 +69,9 @@ class UserPage extends StatelessWidget {
                 ElevatedButton.icon(
                   onPressed: () {
                     userData.deleteUser();
-
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) => const LoginPage()),
-                        (Route<dynamic> route) => false);
+                    Navigator.pop(context);
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => const LoginPage()));
                   },
                   icon: const Icon(Icons.logout),
                   label: const Text("Sair"),

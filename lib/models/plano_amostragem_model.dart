@@ -41,7 +41,6 @@ class PlanoAmostragemModel with ChangeNotifier {
       );
     });
 
-    print(items);
     notifyListeners();
   }
 }

@@ -49,7 +49,7 @@ class DB {
     return await openDatabase(
         join(
           await getDatabasesPath(),
-          "samplemanagersystem3.db",
+          "samplemanagersystem6.db",
         ),
         version: 1,
         onCreate: _onCreate);
@@ -59,6 +59,7 @@ class DB {
     await db.execute(_user);
     await db.execute(_amostragemBefore);
     await db.execute(_amostragemLater);
+    await db.execute(_planoAmostragemOn);
   }
 
   String get _user => '''
@@ -70,10 +71,17 @@ CREATE TABLE user (
     remember BOOLEAN)
     ''';
 
+  String get _planoAmostragemOn => '''
+CREATE TABLE planoAmostragemOn (
+    idPlanoAmostragem INTEGER PRIMARY KEY, 
+    subEstacao TEXT, 
+    equipamentoMissing INTEGER)
+    ''';
+
   String get _amostragemBefore => '''
 CREATE TABLE amostragemBefore (
     localIdAmostragem INTEGER PRIMARY KEY, 
-    idAmostragem TEXT, 
+    idPlanoAmostragem INTEGER, 
     idEquipamento TEXT,
     cod_barras TEXT, 
     ensaio TEXT, 

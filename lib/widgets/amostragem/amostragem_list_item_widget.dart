@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sms_app/class/amostragem_class.dart';
-import 'package:provider/provider.dart';
-import 'package:sms_app/models/amostragem_model.dart';
+
 import 'package:sms_app/pages/amostragem_main_page.dart';
 
 class AmostragemListItemWidget extends StatelessWidget {
@@ -64,11 +63,13 @@ class AmostragemListItemWidget extends StatelessWidget {
           child: Icon(Icons.arrow_forward_ios_rounded),
         ),
         onTap: () {
+          // Navigator.pop(context);
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => AmostragemMainPage(
-                localIdAmostragem: data.localIdAmostragem,
+                localIdAmostragem: data.localIdAmostragem!,
+                idPlanoAmostragem: data.idPlanoAmostragem!,
               ),
             ),
           );

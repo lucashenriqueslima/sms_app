@@ -5,6 +5,7 @@ import 'package:sms_app/models/user_model.dart';
 import 'package:sms_app/pages/amostragem_list_page.dart';
 import 'package:sms_app/pages/home_page.dart';
 import 'package:sms_app/pages/login_page.dart';
+import 'package:sms_app/pages/plano_amostragem_on_list_page.dart';
 import 'package:sms_app/widgets/global/loader_widget.dart';
 
 class AutenticationPage extends StatelessWidget {
@@ -28,6 +29,10 @@ class AutenticationPage extends StatelessWidget {
             return const HomePage();
           }
           if (redirect.status == 2) {
+            return const PlanoAmostragemOnListPage(reloaded: true);
+          }
+
+          if (redirect.status == 3) {
             return const AmostragemListPage(reloaded: true);
           }
 
