@@ -26,10 +26,19 @@ class AmostragemFormPage extends StatefulWidget {
 
 class _AmostragemFormPageState extends State<AmostragemFormPage> {
   final _formKey = GlobalKey<FormState>();
+  BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
+  int bluetoothStatus = 0;
   List<BluetoothDevice> _devices = [];
   BluetoothDevice? _device;
   bool _connected = false;
   String? pathImage;
+
+  @override
+  void initState() {
+    super.initState();
+
+    getBluetoothStatus();
+  }
 
   void submitForm() {
     final isValid = _formKey.currentState?.validate() ?? false;
@@ -48,23 +57,13 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
     // _formKey.currentState?.save();
   }
 
-  Future<void> initPlatformState() async {
-    BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
-    bool? isConnected = await bluetooth.isConnected;
-    List<BluetoothDevice> devices = [];
-
-    try {
-      devices = await bluetooth.getBondedDevices();
-    } on PlatformException {
-      // TODO - Error
-    }
-
+  Future<void> getBluetoothStatus() async {
     bluetooth.onStateChanged().listen((state) {
       switch (state) {
         case BlueThermalPrinter.CONNECTED:
           setState(() {
             _connected = true;
-            print("bluetooth device state: connected");
+            bluetoothStatus = BlueThermalPrinter.CONNECTED;
           });
           break;
         case BlueThermalPrinter.DISCONNECTED:
@@ -82,25 +81,26 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
         case BlueThermalPrinter.STATE_TURNING_OFF:
           setState(() {
             _connected = false;
-            print("bluetooth device state: bluetooth turning off");
+            // print("bluetooth device state: bluetooth turning off");
           });
           break;
         case BlueThermalPrinter.STATE_OFF:
           setState(() {
             _connected = false;
-            print("bluetooth device state: bluetooth off");
+            bluetoothStatus = BlueThermalPrinter.STATE_OFF;
+            print(bluetoothStatus);
           });
           break;
         case BlueThermalPrinter.STATE_ON:
           setState(() {
-            _connected = false;
-            print("bluetooth device state: bluetooth on");
+            bluetoothStatus = BlueThermalPrinter.STATE_ON;
+            print(bluetoothStatus);
           });
           break;
         case BlueThermalPrinter.STATE_TURNING_ON:
           setState(() {
             _connected = false;
-            print("bluetooth device state: bluetooth turning on");
+            // print("bluetooth device state: bluetooth turning on");
           });
           break;
         case BlueThermalPrinter.ERROR:
@@ -114,6 +114,17 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
           break;
       }
     });
+  }
+
+  Future<void> getDevices() async {
+    bool? isConnected = await bluetooth.isConnected;
+    List<BluetoothDevice> devices = [];
+
+    try {
+      devices = await bluetooth.getBondedDevices();
+    } on PlatformException {
+      // TODO - Error
+    }
 
     if (!mounted) return;
     setState(() {
@@ -126,6 +137,8 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
       });
     }
   }
+
+  modalBottomSheet() {}
 
   @override
   Widget build(BuildContext context) {
@@ -448,21 +461,52 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
               onPressed: () async {
                 submitForm();
 
-                await initPlatformState();
+                print(bluetoothStatus);
 
-                print(_devices.length);
+                if (_connected) {}
+
+                await getDevices();
 
                 showModalBottomSheet(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        topRight: Radius.circular(15)),
+                  ),
                   context: context,
                   builder: (_) {
                     return Column(
                       children: [
+                        Stack(children: [
+                          const SizedBox(
+                            width: double.infinity,
+                            height: 56.0,
+                            child: Center(
+                                child: Text(
+                              "Selecione uma impressora",
+                              style: TextStyle(fontSize: 17),
+                            ) // Your desired title
+                                ),
+                          ),
+                          Positioned(
+                              left: 0.0,
+                              top: 0.0,
+                              child: IconButton(
+                                  icon: const Icon(
+                                      Icons.close), // Your desired icon
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  }))
+                        ]),
                         Expanded(
                           child: ListView.builder(
+                            padding: const EdgeInsets.all(10),
                             itemCount: _devices.length,
                             itemBuilder: (ctx, index) {
                               return DevicesListItemWidget(
-                                  device: _devices[index].name!);
+                                device: _devices[index],
+                                selectDevice: selecttDevice,
+                              );
                             },
                           ),
                         ),
@@ -483,5 +527,23 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
         ),
       ),
     );
+  }
+
+  void selecttDevice(selectedDevice) {
+    _device = selectedDevice;
+  }
+
+  void _connect() {
+    if (_device == null) {
+    } else {
+      bluetooth.isConnected.then((isConnected) {
+        if (!isConnected!) {
+          bluetooth.connect(_device!).catchError((error) {
+            setState(() => _connected = false);
+          });
+          setState(() => _connected = true);
+        }
+      });
+    }
   }
 }
