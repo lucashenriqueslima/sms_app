@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 
 class DevicesListItemWidget extends StatelessWidget {
   DevicesListItemWidget(
-      {Key? key, required this.device, required this.selectDevice})
+      {Key? key,
+      required this.device,
+      required this.index,
+      required this.selectDevice})
       : super(key: key);
 
-  final device;
+  final String device;
+  final int index;
   Function selectDevice;
 
   @override
@@ -13,8 +17,8 @@ class DevicesListItemWidget extends StatelessWidget {
     return Card(
       elevation: 4,
       child: ListTile(
-        title: Text("${device.name}"),
-        onTap: () => selectDevice(device),
+        title: Text(device),
+        onTap: () => selectDevice(index),
       ),
     );
   }

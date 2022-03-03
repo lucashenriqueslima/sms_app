@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_app/models/amostragem_model.dart';
+import 'package:sms_app/print/amostragem_print.dart';
 import 'package:sms_app/widgets/amostragem/devices_list_item_widget.dart';
 import 'amostragem_list_page.dart';
 import 'dart:io';
@@ -33,11 +34,24 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
   bool _connected = false;
   String? pathImage;
 
+  AmostragemPrint? amostragemPrint;
+
   @override
   void initState() {
     super.initState();
-
     getBluetoothStatus();
+  }
+
+  initSavetoPath() async {
+    //read and write
+    //image max 300px X 300px
+    const String filename = 'logo_acs.png';
+    var bytes = await rootBundle.load("assets/images/logo_acs.png");
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    writeToFile(bytes, '$dir/$filename');
+    setState(() {
+      pathImage = '$dir/$filename';
+    });
   }
 
   void submitForm() {
@@ -463,7 +477,10 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
 
                 print(bluetoothStatus);
 
-                if (_connected) {}
+                if (_connected) {
+                  amostragemPrint!.printPage(pathImage!,
+                      amostragemData.itemByIndex(widget.localIdAmostragem));
+                }
 
                 await getDevices();
 
@@ -499,16 +516,22 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
                                   }))
                         ]),
                         Expanded(
-                          child: ListView.builder(
-                            padding: const EdgeInsets.all(10),
-                            itemCount: _devices.length,
-                            itemBuilder: (ctx, index) {
-                              return DevicesListItemWidget(
-                                device: _devices[index],
-                                selectDevice: selecttDevice,
-                              );
-                            },
-                          ),
+                          child: bluetoothStatus != 12
+                              ? const Center(
+                                  child: Text("Favor ligar o bluetooth"),
+                                )
+                              : ListView.builder(
+                                  padding: const EdgeInsets.all(10),
+                                  itemCount: _devices.length,
+                                  itemBuilder: (ctx, index) {
+                                    return DevicesListItemWidget(
+                                      device: _devices[index].name ??
+                                          "Dispositivo Sem Nome",
+                                      index: index,
+                                      selectDevice: selectDevice,
+                                    );
+                                  },
+                                ),
                         ),
                       ],
                     );
@@ -529,8 +552,10 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
     );
   }
 
-  void selecttDevice(selectedDevice) {
-    _device = selectedDevice;
+  void selectDevice(int index) {
+    _device = _devices[index];
+
+    _connect();
   }
 
   void _connect() {
@@ -545,5 +570,11 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
         }
       });
     }
+  }
+
+  Future<void> writeToFile(ByteData data, String path) {
+    final buffer = data.buffer;
+    return new File(path).writeAsBytes(
+        buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
   }
 }
