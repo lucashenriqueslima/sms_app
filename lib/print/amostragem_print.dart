@@ -59,6 +59,7 @@ class AmostragemPrint {
         bluetooth.printQRcode("Insert Your Own Text to Generate", 200, 200, 1);
         bluetooth.printNewLine();
         bluetooth.printNewLine();
+        bluetooth.printNewLine();
         bluetooth.paperCut();
       }
     });

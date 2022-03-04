@@ -40,6 +40,8 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
   void initState() {
     super.initState();
     getBluetoothStatus();
+    initSavetoPath();
+    amostragemPrint = AmostragemPrint();
   }
 
   initSavetoPath() async {
@@ -518,7 +520,10 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
                         Expanded(
                           child: bluetoothStatus != 12
                               ? const Center(
-                                  child: Text("Favor ligar o bluetooth"),
+                                  child: Text(
+                                    "Favor ligar o bluetooth",
+                                    style: TextStyle(fontSize: 18),
+                                  ),
                                 )
                               : ListView.builder(
                                   padding: const EdgeInsets.all(10),
