@@ -49,7 +49,7 @@ class DB {
     return await openDatabase(
         join(
           await getDatabasesPath(),
-          "samplemanagersystem6.db",
+          "samplemanagersystem7.db",
         ),
         version: 1,
         onCreate: _onCreate);
@@ -104,6 +104,7 @@ CREATE TABLE amostragemLater(
     umidade_relativa TEXT, 
     observacao TEXT, 
     equipamento_energizado BOOLEAN, 
-    nao_conformidade TEXT)
+    nao_conformidade TEXT,
+    image TEXT)
 ''';
 }

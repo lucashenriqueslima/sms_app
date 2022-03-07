@@ -92,7 +92,7 @@ class _AmostragemMainPageState extends State<AmostragemMainPage> {
           selectedFontSize: 13,
           selectedIconTheme: const IconThemeData(size: 30),
           selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: Colors.grey[300],
           unselectedItemColor: Colors.grey[700],
           selectedItemColor: Theme.of(context).colorScheme.primary,
           elevation: 5,

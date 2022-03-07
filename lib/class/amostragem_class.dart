@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class AmostragemClass {
   final int? localIdAmostragem;
   final int? idPlanoAmostragem;
@@ -18,28 +20,27 @@ class AmostragemClass {
   String? umidade_relativa;
   String? observacao;
   bool? equipamento_energizado = false;
-  bool? nao_conformidade = false;
+  File? image;
 
-  AmostragemClass({
-    required this.localIdAmostragem,
-    required this.idPlanoAmostragem,
-    required this.idEquipamento,
-    this.cod_barras,
-    this.ensaio,
-    this.serie,
-    this.tag,
-    this.sub_estacao,
-    this.tipo,
-    this.potencia,
-    this.tensao,
-    required this.statusAmostragemItem,
-    this.temp_amostra,
-    this.temp_enrolamento,
-    this.temp_equipamento,
-    this.temp_ambiente,
-    this.umidade_relativa,
-    this.observacao,
-    this.equipamento_energizado,
-    this.nao_conformidade,
-  });
+  AmostragemClass(
+      {required this.localIdAmostragem,
+      required this.idPlanoAmostragem,
+      required this.idEquipamento,
+      this.cod_barras,
+      this.ensaio,
+      this.serie,
+      this.tag,
+      this.sub_estacao,
+      this.tipo,
+      this.potencia,
+      this.tensao,
+      required this.statusAmostragemItem,
+      this.temp_amostra,
+      this.temp_enrolamento,
+      this.temp_equipamento,
+      this.temp_ambiente,
+      this.umidade_relativa,
+      this.observacao,
+      this.equipamento_energizado,
+      this.image});
 }

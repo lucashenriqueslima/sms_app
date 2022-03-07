@@ -3,9 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:sms_app/models/amostragem_model.dart';
 import 'package:sms_app/print/amostragem_print.dart';
 import 'package:sms_app/widgets/amostragem/devices_list_item_widget.dart';
+import 'package:sms_app/widgets/amostragem/image_input_widget.dart';
 import 'amostragem_list_page.dart';
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:async';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/services.dart';
@@ -33,7 +33,7 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
   BluetoothDevice? _device;
   bool _connected = false;
   String? pathImage;
-
+  File? _pickedImage;
   AmostragemPrint? amostragemPrint;
 
   @override
@@ -47,8 +47,8 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
   initSavetoPath() async {
     //read and write
     //image max 300px X 300px
-    const String filename = 'logo_acs.png';
-    var bytes = await rootBundle.load("assets/images/logo_acs.png");
+    const String filename = 'logo_acs_etq.png';
+    var bytes = await rootBundle.load("assets/images/logo_acs_etq.png");
     String dir = (await getApplicationDocumentsDirectory()).path;
     writeToFile(bytes, '$dir/$filename');
     setState(() {
@@ -64,6 +64,11 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
     }
 
     _formKey.currentState?.save();
+
+    Provider.of<AmostragemModel>(
+      context,
+      listen: false,
+    ).items[widget.localIdAmostragem].image = _pickedImage;
 
     Provider.of<AmostragemModel>(
       context,
@@ -152,6 +157,10 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
         _connected = true;
       });
     }
+  }
+
+  void selectImage(File pickedImage) {
+    _pickedImage = pickedImage;
   }
 
   modalBottomSheet() {}
@@ -448,7 +457,7 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 15.0, bottom: 20.00),
+              padding: const EdgeInsets.only(top: 15.0, bottom: 30.00),
               child: Card(
                 color: Colors.blue[50],
                 elevation: 0,
@@ -473,6 +482,14 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
                     }),
               ),
             ),
+            // ImageInputWidget(
+            //   onSelectImage: selectImage,
+            //   storedImage:
+            //       amostragemData.itemByIndex(widget.localIdAmostragem).image,
+            // ),
+            SizedBox(
+              height: 50,
+            ),
             ElevatedButton(
               onPressed: () async {
                 submitForm();
@@ -480,8 +497,10 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
                 print(bluetoothStatus);
 
                 if (_connected) {
-                  amostragemPrint!.printPage(pathImage!,
-                      amostragemData.itemByIndex(widget.localIdAmostragem));
+                  printPaper(
+                    amostragemData.itemByIndex(widget.localIdAmostragem),
+                  );
+                  return;
                 }
 
                 await getDevices();
@@ -508,14 +527,16 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
                                 ),
                           ),
                           Positioned(
-                              left: 0.0,
-                              top: 0.0,
-                              child: IconButton(
-                                  icon: const Icon(
-                                      Icons.close), // Your desired icon
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  }))
+                            left: 0.0,
+                            top: 0.0,
+                            child: IconButton(
+                              icon:
+                                  const Icon(Icons.close), // Your desired icon
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          )
                         ]),
                         Expanded(
                           child: bluetoothStatus != 12
@@ -534,6 +555,8 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
                                           "Dispositivo Sem Nome",
                                       index: index,
                                       selectDevice: selectDevice,
+                                      localIdAmostragem:
+                                          widget.localIdAmostragem,
                                     );
                                   },
                                 ),
@@ -557,10 +580,10 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
     );
   }
 
-  void selectDevice(int index) {
+  void selectDevice(int index, data) {
     _device = _devices[index];
-
     _connect();
+    printPaper(data);
   }
 
   void _connect() {
@@ -575,6 +598,11 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
         }
       });
     }
+  }
+
+  printPaper(data) {
+    amostragemPrint!.printPage(pathImage!, data);
+    return;
   }
 
   Future<void> writeToFile(ByteData data, String path) {

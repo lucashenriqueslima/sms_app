@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:sms_app/class/amostragem_class.dart';
 import 'package:http/http.dart' as http;
 import 'package:sms_app/db/db.dart';
@@ -59,7 +61,8 @@ class AmostragemModel with ChangeNotifier {
             temp_ambiente: '',
             umidade_relativa: '',
             observacao: '',
-            equipamento_energizado: false),
+            equipamento_energizado: false,
+            image: null),
       );
 
       localId++;
@@ -78,31 +81,34 @@ class AmostragemModel with ChangeNotifier {
         await DB.select("SELECT * FROM amostragemLater");
 
     for (int i = 0; i <= localDataAmostragemBefore.length - 1; i++) {
-      items.add(AmostragemClass(
-        localIdAmostragem: i,
-        idPlanoAmostragem: localDataAmostragemBefore[i]["idPlanoAmostragem"],
-        idEquipamento: localDataAmostragemBefore[i]["idEquipamento"],
-        cod_barras: localDataAmostragemBefore[i]["cod_barras"],
-        ensaio: localDataAmostragemBefore[i]["ensaio"],
-        serie: localDataAmostragemBefore[i]["serie"],
-        tag: localDataAmostragemBefore[i]["tag"],
-        sub_estacao: localDataAmostragemBefore[i]["sub_estacao"],
-        tipo: localDataAmostragemBefore[i]["tipo"],
-        potencia: localDataAmostragemBefore[i]["potencia"],
-        tensao: localDataAmostragemBefore[i]["tensao"],
-        statusAmostragemItem: localDataAmostragemLater[i]
-            ["statusAmostragemItem"],
-        temp_amostra: localDataAmostragemLater[i]["temp_amostra"],
-        temp_enrolamento: localDataAmostragemLater[i]["temp_enrolamento"],
-        temp_equipamento: localDataAmostragemLater[i]["temp_equipamento"],
-        temp_ambiente: localDataAmostragemLater[i]["temp_ambiente"],
-        umidade_relativa: localDataAmostragemLater[i]["umidade_relativa"],
-        observacao: localDataAmostragemLater[i]["observacao"],
-        equipamento_energizado:
-            localDataAmostragemLater[i]["equipamento_energizado"] != 1
-                ? false
-                : true,
-      ));
+      items.add(
+        AmostragemClass(
+          localIdAmostragem: i,
+          idPlanoAmostragem: localDataAmostragemBefore[i]["idPlanoAmostragem"],
+          idEquipamento: localDataAmostragemBefore[i]["idEquipamento"],
+          cod_barras: localDataAmostragemBefore[i]["cod_barras"],
+          ensaio: localDataAmostragemBefore[i]["ensaio"],
+          serie: localDataAmostragemBefore[i]["serie"],
+          tag: localDataAmostragemBefore[i]["tag"],
+          sub_estacao: localDataAmostragemBefore[i]["sub_estacao"],
+          tipo: localDataAmostragemBefore[i]["tipo"],
+          potencia: localDataAmostragemBefore[i]["potencia"],
+          tensao: localDataAmostragemBefore[i]["tensao"],
+          statusAmostragemItem: localDataAmostragemLater[i]
+              ["statusAmostragemItem"],
+          temp_amostra: localDataAmostragemLater[i]["temp_amostra"],
+          temp_enrolamento: localDataAmostragemLater[i]["temp_enrolamento"],
+          temp_equipamento: localDataAmostragemLater[i]["temp_equipamento"],
+          temp_ambiente: localDataAmostragemLater[i]["temp_ambiente"],
+          umidade_relativa: localDataAmostragemLater[i]["umidade_relativa"],
+          observacao: localDataAmostragemLater[i]["observacao"],
+          equipamento_energizado:
+              localDataAmostragemLater[i]["equipamento_energizado"] != 1
+                  ? false
+                  : true,
+          image: File(localDataAmostragemLater[i]["image"]),
+        ),
+      );
     }
 
     notifyListeners();
@@ -134,6 +140,7 @@ class AmostragemModel with ChangeNotifier {
       'observacao': '',
       'equipamento_energizado': 0,
       'nao_conformidade': '',
+      'image': '',
     });
   }
 
@@ -148,7 +155,8 @@ class AmostragemModel with ChangeNotifier {
         temp_ambiente = '${itemByIndex(localIdAmostragem).temp_ambiente}', 
         umidade_relativa = '${itemByIndex(localIdAmostragem).umidade_relativa}', 
         observacao =  '${itemByIndex(localIdAmostragem).observacao}', 
-        equipamento_energizado = ${itemByIndex(localIdAmostragem).equipamento_energizado != true ? 0 : 1}
+        equipamento_energizado = ${itemByIndex(localIdAmostragem).equipamento_energizado != true ? 0 : 1},
+        image = ${itemByIndex(localIdAmostragem).image},
         WHERE localIdAmostragem = $localIdAmostragem''');
 
       return;
