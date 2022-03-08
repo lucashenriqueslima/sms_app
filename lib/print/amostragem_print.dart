@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 
 class AmostragemPrint {
@@ -5,7 +7,7 @@ class AmostragemPrint {
 
   final String now =
       "${DateTime.now().day.toString().padLeft(2, '0')}/${DateTime.now().month.toString().padLeft(2, '0')}/${DateTime.now().year.toString()} ${DateTime.now().hour.toString().padLeft(2, '0')}:${DateTime.now().minute.toString().padLeft(2, '0')}";
-  printPage(String pathImage, data) async {
+  printPage(String pathImageLogo, pathImageBarCode, data) async {
     //SIZE
     // 0- normal size text
     // 1- only bold text
@@ -20,7 +22,7 @@ class AmostragemPrint {
 //     Uint8List bytes = response.bodyBytes;
     bluetooth.isConnected.then((isConnected) {
       if (isConnected!) {
-        bluetooth.printImage(pathImage); //path of your image/logo
+        bluetooth.printImage(pathImageLogo); //path of your image/logo
         bluetooth.printNewLine();
         bluetooth.printCustom("Acs Laboratorios", 4, 1);
         bluetooth.printNewLine();
@@ -29,13 +31,12 @@ class AmostragemPrint {
         bluetooth.printNewLine();
 //      bluetooth.printImageBytes(bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
         bluetooth.printCustom(
-            "${data.serie == "Sem Informação" ? "S/I" : data.serie} | ${data.tag == "Sem Informação" ? "S/I" : data.tag} | ${data.sub_estacao == "Sem Informação" ? "S/I" : data.sub_estacao}",
+            "${data.serie == "Sem Informação" ? "S/I" : data.serie} | ${data.tag == "SEM INFORMAÇÃO" ? "S/I" : data.tag} | ${data.sub_estacao == "Sem Informação" ? "S/I" : data.sub_estacao}",
             1,
             1);
         bluetooth.printNewLine();
         bluetooth.printCustom(now, 1, 1);
-        // bluetooth.printLeftRight("Subestacao", data.sub_estacao, 1,
-        //     format: "%-15s %15s %n");
+
         bluetooth.printNewLine();
         bluetooth.printCustom("--------------------------------", 1, 1);
         bluetooth.printNewLine();
@@ -51,6 +52,19 @@ class AmostragemPrint {
         bluetooth.printNewLine();
         bluetooth.printLeftRight(
             "T. Umidade:", "${data.umidade_relativa} C", 3);
+        bluetooth.printNewLine();
+        bluetooth.printCustom("--------------------------------", 1, 1);
+        bluetooth.printNewLine();
+        bluetooth.printNewLine();
+        bluetooth.printImage(pathImageBarCode);
+        bluetooth.printNewLine();
+        bluetooth.printCustom("--------------------------------", 1, 1);
+        bluetooth.printNewLine();
+        bluetooth.printQRcode(
+            "https://labmetrix.com.br/etq.php?p=${data.cod_barras}",
+            200,
+            200,
+            1);
         bluetooth.printNewLine();
         bluetooth.printNewLine();
         bluetooth.printNewLine();

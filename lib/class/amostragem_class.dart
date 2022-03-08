@@ -20,7 +20,7 @@ class AmostragemClass {
   String? umidade_relativa;
   String? observacao;
   bool? equipamento_energizado = false;
-  File? image;
+  String? image;
 
   AmostragemClass(
       {required this.localIdAmostragem,

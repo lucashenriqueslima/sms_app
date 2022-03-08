@@ -62,7 +62,7 @@ class AmostragemModel with ChangeNotifier {
             umidade_relativa: '',
             observacao: '',
             equipamento_energizado: false,
-            image: null),
+            image: ''),
       );
 
       localId++;
@@ -106,7 +106,7 @@ class AmostragemModel with ChangeNotifier {
               localDataAmostragemLater[i]["equipamento_energizado"] != 1
                   ? false
                   : true,
-          image: File(localDataAmostragemLater[i]["image"]),
+          image: localDataAmostragemLater[i]["image"],
         ),
       );
     }
@@ -156,7 +156,7 @@ class AmostragemModel with ChangeNotifier {
         umidade_relativa = '${itemByIndex(localIdAmostragem).umidade_relativa}', 
         observacao =  '${itemByIndex(localIdAmostragem).observacao}', 
         equipamento_energizado = ${itemByIndex(localIdAmostragem).equipamento_energizado != true ? 0 : 1},
-        image = ${itemByIndex(localIdAmostragem).image},
+        image = ${itemByIndex(localIdAmostragem).image}
         WHERE localIdAmostragem = $localIdAmostragem''');
 
       return;

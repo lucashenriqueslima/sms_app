@@ -1,15 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_app/models/amostragem_model.dart';
 import 'package:sms_app/print/amostragem_print.dart';
 import 'package:sms_app/widgets/amostragem/devices_list_item_widget.dart';
 import 'package:sms_app/widgets/amostragem/image_input_widget.dart';
-import 'amostragem_list_page.dart';
-import 'dart:io';
+import 'package:image/image.dart' as package_image;
+import 'package:barcode_image/barcode_image.dart';
 import 'dart:async';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'amostragem_list_page.dart';
 
 class AmostragemFormPage extends StatefulWidget {
   const AmostragemFormPage({
@@ -32,7 +35,8 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
   List<BluetoothDevice> _devices = [];
   BluetoothDevice? _device;
   bool _connected = false;
-  String? pathImage;
+  String? pathImageLogo;
+  String? pathImageBarCode;
   File? _pickedImage;
   AmostragemPrint? amostragemPrint;
 
@@ -47,12 +51,27 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
   initSavetoPath() async {
     //read and write
     //image max 300px X 300px
+
+    String dir = (await getApplicationDocumentsDirectory()).path;
+
+    final image = package_image.Image(300, 150);
+
+    // Fill it with a solid color (white)
+    package_image.fill(image, package_image.getColor(255, 255, 255));
+
+    // Draw the barcode
+    drawBarcode(image, Barcode.code39(), "12345678",
+        font: package_image.arial_24);
+
+    // Save the image
+    File('$dir/barcode.png').writeAsBytesSync(package_image.encodePng(image));
+
     const String filename = 'logo_acs_etq.png';
     var bytes = await rootBundle.load("assets/images/logo_acs_etq.png");
-    String dir = (await getApplicationDocumentsDirectory()).path;
     writeToFile(bytes, '$dir/$filename');
     setState(() {
-      pathImage = '$dir/$filename';
+      pathImageLogo = '$dir/$filename';
+      pathImageBarCode = '$dir/barcode.png';
     });
   }
 
@@ -68,7 +87,7 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
     Provider.of<AmostragemModel>(
       context,
       listen: false,
-    ).items[widget.localIdAmostragem].image = _pickedImage;
+    ).items[widget.localIdAmostragem].image = _pickedImage.toString();
 
     Provider.of<AmostragemModel>(
       context,
@@ -90,32 +109,27 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
         case BlueThermalPrinter.DISCONNECTED:
           setState(() {
             _connected = false;
-            print("bluetooth device state: disconnected");
           });
           break;
         case BlueThermalPrinter.DISCONNECT_REQUESTED:
           setState(() {
             _connected = false;
-            print("bluetooth device state: disconnect requested");
           });
           break;
         case BlueThermalPrinter.STATE_TURNING_OFF:
           setState(() {
             _connected = false;
-            // print("bluetooth device state: bluetooth turning off");
           });
           break;
         case BlueThermalPrinter.STATE_OFF:
           setState(() {
             _connected = false;
             bluetoothStatus = BlueThermalPrinter.STATE_OFF;
-            print(bluetoothStatus);
           });
           break;
         case BlueThermalPrinter.STATE_ON:
           setState(() {
             bluetoothStatus = BlueThermalPrinter.STATE_ON;
-            print(bluetoothStatus);
           });
           break;
         case BlueThermalPrinter.STATE_TURNING_ON:
@@ -127,11 +141,9 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
         case BlueThermalPrinter.ERROR:
           setState(() {
             _connected = false;
-            print("bluetooth device state: error");
           });
           break;
         default:
-          print(state);
           break;
       }
     });
@@ -601,7 +613,7 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
   }
 
   printPaper(data) {
-    amostragemPrint!.printPage(pathImage!, data);
+    amostragemPrint!.printPage(pathImageLogo!, pathImageBarCode, data);
     return;
   }
 

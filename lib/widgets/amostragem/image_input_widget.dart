@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart' as syspaths;
 class ImageInputWidget extends StatefulWidget {
   ImageInputWidget({Key? key, required this.onSelectImage, this.storedImage});
   final Function onSelectImage;
-  File? storedImage = null;
+  File? storedImage;
 
   @override
   _ImageInputWidgetState createState() => _ImageInputWidgetState();
