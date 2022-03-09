@@ -35,8 +35,6 @@ class AmostragemModel with ChangeNotifier {
 
     Map<String, dynamic> data = jsonDecode(response.body);
 
-    print(data);
-
     await data["data"].forEach((AmostragemData) {
       saveAmsotragem(localId, AmostragemData);
 
@@ -62,7 +60,7 @@ class AmostragemModel with ChangeNotifier {
             umidade_relativa: '',
             observacao: '',
             equipamento_energizado: false,
-            image: ''),
+            image: null),
       );
 
       localId++;
@@ -106,7 +104,9 @@ class AmostragemModel with ChangeNotifier {
               localDataAmostragemLater[i]["equipamento_energizado"] != 1
                   ? false
                   : true,
-          image: localDataAmostragemLater[i]["image"],
+          image: localDataAmostragemLater[i]["image"] != null
+              ? File(localDataAmostragemLater[i]["image"])
+              : null,
         ),
       );
     }
@@ -146,17 +146,18 @@ class AmostragemModel with ChangeNotifier {
 
   Future<void> updateAmostragemById(
       statusAmostragemItem, localIdAmostragem) async {
+    notifyListeners();
     if (statusAmostragemItem == 2) {
-      DB.update('''UPDATE amostragemLater 
-        SET statusAmostragemItem = $statusAmostragemItem, 
-        temp_amostra = '${itemByIndex(localIdAmostragem).temp_amostra}', 
-        temp_enrolamento = '${itemByIndex(localIdAmostragem).temp_enrolamento}', 
-        temp_equipamento = '${itemByIndex(localIdAmostragem).temp_equipamento}', 
-        temp_ambiente = '${itemByIndex(localIdAmostragem).temp_ambiente}', 
-        umidade_relativa = '${itemByIndex(localIdAmostragem).umidade_relativa}', 
-        observacao =  '${itemByIndex(localIdAmostragem).observacao}', 
+      DB.update('''UPDATE amostragemLater
+        SET statusAmostragemItem = $statusAmostragemItem,
+        temp_amostra = '${itemByIndex(localIdAmostragem).temp_amostra}',
+        temp_enrolamento = '${itemByIndex(localIdAmostragem).temp_enrolamento}',
+        temp_equipamento = '${itemByIndex(localIdAmostragem).temp_equipamento}',
+        temp_ambiente = '${itemByIndex(localIdAmostragem).temp_ambiente}',
+        umidade_relativa = '${itemByIndex(localIdAmostragem).umidade_relativa}',
+        observacao =  '${itemByIndex(localIdAmostragem).observacao}',
         equipamento_energizado = ${itemByIndex(localIdAmostragem).equipamento_energizado != true ? 0 : 1},
-        image = ${itemByIndex(localIdAmostragem).image}
+        image = '${itemByIndex(localIdAmostragem).image != null ? itemByIndex(localIdAmostragem).image!.path : ''}'
         WHERE localIdAmostragem = $localIdAmostragem''');
 
       return;
@@ -171,7 +172,8 @@ UPDATE amostragemLater
         temp_ambiente = '', 
         umidade_relativa = '', 
         observacao =  '', 
-        equipamento_energizado = 0 
+        equipamento_energizado = 0,
+        image = ''
         WHERE localIdAmostragem = $localIdAmostragem''');
   }
 

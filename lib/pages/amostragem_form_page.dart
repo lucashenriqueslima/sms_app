@@ -84,11 +84,12 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
 
     _formKey.currentState?.save();
 
-    Provider.of<AmostragemModel>(
-      context,
-      listen: false,
-    ).items[widget.localIdAmostragem].image = _pickedImage.toString();
-
+    if (_pickedImage != null) {
+      Provider.of<AmostragemModel>(
+        context,
+        listen: false,
+      ).items[widget.localIdAmostragem].image = _pickedImage;
+    }
     Provider.of<AmostragemModel>(
       context,
       listen: false,
@@ -135,7 +136,6 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
         case BlueThermalPrinter.STATE_TURNING_ON:
           setState(() {
             _connected = false;
-            // print("bluetooth device state: bluetooth turning on");
           });
           break;
         case BlueThermalPrinter.ERROR:
@@ -246,356 +246,350 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
         ),
       ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: EdgeInsets.all(20),
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: TextFormField(
-                initialValue: amostragemData
-                    .itemByIndex(widget.localIdAmostragem)
-                    .temp_amostra,
-                onSaved: (temp_amostra) => amostragemData
-                    .items[widget.localIdAmostragem]
-                    .temp_amostra = temp_amostra,
-                validator: (_temp_amostra) {
-                  final temp_amostra = _temp_amostra ?? '';
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.all(20),
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: TextFormField(
+                  initialValue: amostragemData
+                      .itemByIndex(widget.localIdAmostragem)
+                      .temp_amostra,
+                  onSaved: (temp_amostra) => amostragemData
+                      .items[widget.localIdAmostragem]
+                      .temp_amostra = temp_amostra,
+                  validator: (_temp_amostra) {
+                    final temp_amostra = _temp_amostra ?? '';
 
-                  if (temp_amostra.contains('.')) {
-                    return 'Favor não utilizar "."';
-                  }
+                    if (temp_amostra.contains('.')) {
+                      return 'Favor não utilizar "."';
+                    }
 
-                  return null;
-                },
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: false),
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(
-                  filled: true,
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.primary),
-                    borderRadius: BorderRadius.circular(10.0),
+                    return null;
+                  },
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: false),
+                  textInputAction: TextInputAction.next,
+                  decoration: InputDecoration(
+                    filled: true,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                    fillColor: Colors.blue[50],
+                    labelText: 'Temp. Amostra',
+                    suffixIcon: const Icon(Icons.bloodtype),
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  ),
-                  fillColor: Colors.blue[50],
-                  labelText: 'Temp. Amostra',
-                  suffixIcon: const Icon(Icons.bloodtype),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: TextFormField(
-                validator: (_temp_amostra) {
-                  final temp_amostra = _temp_amostra ?? '';
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: TextFormField(
+                  validator: (_temp_amostra) {
+                    final temp_amostra = _temp_amostra ?? '';
 
-                  if (temp_amostra.contains('.')) {
-                    return 'Favor não utilizar "."';
-                  }
+                    if (temp_amostra.contains('.')) {
+                      return 'Favor não utilizar "."';
+                    }
 
-                  return null;
-                },
-                initialValue: amostragemData
-                    .itemByIndex(widget.localIdAmostragem)
-                    .temp_equipamento,
-                onSaved: (temp_equipamento) => amostragemData
-                    .items[widget.localIdAmostragem]
-                    .temp_equipamento = temp_equipamento,
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: false),
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(
-                  filled: true,
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.primary),
-                    borderRadius: BorderRadius.circular(10.0),
+                    return null;
+                  },
+                  initialValue: amostragemData
+                      .itemByIndex(widget.localIdAmostragem)
+                      .temp_equipamento,
+                  onSaved: (temp_equipamento) => amostragemData
+                      .items[widget.localIdAmostragem]
+                      .temp_equipamento = temp_equipamento,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: false),
+                  textInputAction: TextInputAction.next,
+                  decoration: InputDecoration(
+                    filled: true,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                    fillColor: Colors.blue[50],
+                    labelText: 'Temp. Equipamento',
+                    suffixIcon: const Icon(Icons.takeout_dining_outlined),
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  ),
-                  fillColor: Colors.blue[50],
-                  labelText: 'Temp. Equipamento',
-                  suffixIcon: const Icon(Icons.takeout_dining_outlined),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0),
-              child: TextFormField(
-                validator: (_temp_amostra) {
-                  final temp_amostra = _temp_amostra ?? '';
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: TextFormField(
+                  validator: (_temp_amostra) {
+                    final temp_amostra = _temp_amostra ?? '';
 
-                  if (temp_amostra.contains('.')) {
-                    return 'Favor não utilizar "."';
-                  }
+                    if (temp_amostra.contains('.')) {
+                      return 'Favor não utilizar "."';
+                    }
 
-                  return null;
-                },
-                initialValue: amostragemData
-                    .itemByIndex(widget.localIdAmostragem)
-                    .temp_enrolamento,
-                onSaved: (temp_enrolamento) => amostragemData
-                    .items[widget.localIdAmostragem]
-                    .temp_enrolamento = temp_enrolamento,
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: false),
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(
-                  filled: true,
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.primary),
-                    borderRadius: BorderRadius.circular(10.0),
+                    return null;
+                  },
+                  initialValue: amostragemData
+                      .itemByIndex(widget.localIdAmostragem)
+                      .temp_enrolamento,
+                  onSaved: (temp_enrolamento) => amostragemData
+                      .items[widget.localIdAmostragem]
+                      .temp_enrolamento = temp_enrolamento,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: false),
+                  textInputAction: TextInputAction.next,
+                  decoration: InputDecoration(
+                    filled: true,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                    fillColor: Colors.blue[50],
+                    labelText: 'Temp. Enrolamento',
+                    suffixIcon: const Icon(Icons.storm_rounded),
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  ),
-                  fillColor: Colors.blue[50],
-                  labelText: 'Temp. Enrolamento',
-                  suffixIcon: const Icon(Icons.storm_rounded),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: TextFormField(
-                validator: (_temp_amostra) {
-                  final temp_amostra = _temp_amostra ?? '';
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: TextFormField(
+                  validator: (_temp_amostra) {
+                    final temp_amostra = _temp_amostra ?? '';
 
-                  if (temp_amostra.contains('.')) {
-                    return 'Favor não utilizar "."';
-                  }
+                    if (temp_amostra.contains('.')) {
+                      return 'Favor não utilizar "."';
+                    }
 
-                  return null;
-                },
-                initialValue: amostragemData
-                    .itemByIndex(widget.localIdAmostragem)
-                    .temp_ambiente,
-                onSaved: (temp_ambiente) => amostragemData
-                    .items[widget.localIdAmostragem]
-                    .temp_ambiente = temp_ambiente,
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: false),
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(
-                  filled: true,
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.primary),
-                    borderRadius: BorderRadius.circular(10.0),
+                    return null;
+                  },
+                  initialValue: amostragemData
+                      .itemByIndex(widget.localIdAmostragem)
+                      .temp_ambiente,
+                  onSaved: (temp_ambiente) => amostragemData
+                      .items[widget.localIdAmostragem]
+                      .temp_ambiente = temp_ambiente,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: false),
+                  textInputAction: TextInputAction.next,
+                  decoration: InputDecoration(
+                    filled: true,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none,
+                    ),
+                    fillColor: Colors.blue[50],
+                    labelText: 'Temp. Ambiente',
+                    suffixIcon: const Icon(Icons.air_rounded),
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide.none,
-                  ),
-                  fillColor: Colors.blue[50],
-                  labelText: 'Temp. Ambiente',
-                  suffixIcon: const Icon(Icons.air_rounded),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: TextFormField(
-                validator: (_temp_amostra) {
-                  final temp_amostra = _temp_amostra ?? '';
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: TextFormField(
+                  validator: (_temp_amostra) {
+                    final temp_amostra = _temp_amostra ?? '';
 
-                  if (temp_amostra.contains('.')) {
-                    return 'Favor não utilizar "."';
-                  }
+                    if (temp_amostra.contains('.')) {
+                      return 'Favor não utilizar "."';
+                    }
 
-                  return null;
-                },
-                initialValue: amostragemData
-                    .itemByIndex(widget.localIdAmostragem)
-                    .umidade_relativa,
-                onSaved: (umidade_relativa) => amostragemData
-                    .items[widget.localIdAmostragem]
-                    .umidade_relativa = umidade_relativa,
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: false),
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(
-                  filled: true,
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.primary),
-                    borderRadius: BorderRadius.circular(10.0),
+                    return null;
+                  },
+                  initialValue: amostragemData
+                      .itemByIndex(widget.localIdAmostragem)
+                      .umidade_relativa,
+                  onSaved: (umidade_relativa) => amostragemData
+                      .items[widget.localIdAmostragem]
+                      .umidade_relativa = umidade_relativa,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: false),
+                  textInputAction: TextInputAction.next,
+                  decoration: InputDecoration(
+                    filled: true,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none,
+                    ),
+                    fillColor: Colors.blue[50],
+                    labelText: 'Umidade Relativa',
+                    suffixIcon: const Icon(Icons.water_damage_outlined),
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide.none,
-                  ),
-                  fillColor: Colors.blue[50],
-                  labelText: 'Umidade Relativa',
-                  suffixIcon: const Icon(Icons.water_damage_outlined),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: TextFormField(
-                initialValue: amostragemData
-                    .itemByIndex(widget.localIdAmostragem)
-                    .observacao,
-                onSaved: (observacao) => amostragemData
-                    .items[widget.localIdAmostragem].observacao = observacao,
-                textInputAction: TextInputAction.done,
-                maxLines: 5,
-                decoration: InputDecoration(
-                  filled: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide.none,
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: TextFormField(
+                  initialValue: amostragemData
+                      .itemByIndex(widget.localIdAmostragem)
+                      .observacao,
+                  onSaved: (observacao) => amostragemData
+                      .items[widget.localIdAmostragem].observacao = observacao,
+                  textInputAction: TextInputAction.done,
+                  maxLines: 5,
+                  decoration: InputDecoration(
+                    filled: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary),
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    fillColor: Colors.blue[50],
+                    labelText: 'Observação',
+                    suffixIcon: const Icon(Icons.border_color_outlined),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.primary),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0, bottom: 30.00),
+                child: Card(
+                  color: Colors.blue[50],
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
                   ),
-                  fillColor: Colors.blue[50],
-                  labelText: 'Observação',
-                  suffixIcon: const Icon(Icons.border_color_outlined),
+                  child: SwitchListTile(
+                      contentPadding: EdgeInsets.all(6),
+                      controlAffinity: ListTileControlAffinity.leading,
+                      value: amostragemData
+                          .itemByIndex(widget.localIdAmostragem)
+                          .equipamento_energizado!,
+                      secondary: const Icon(Icons.battery_unknown_outlined),
+                      title: const Text("Equipamento Energizado?"),
+                      onChanged: (value) {
+                        setState(() {
+                          amostragemData
+                              .itemByIndex(widget.localIdAmostragem)
+                              .equipamento_energizado = value;
+                          amostragemData.notifyListeners();
+                        });
+                      }),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0, bottom: 30.00),
-              child: Card(
-                color: Colors.blue[50],
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                child: SwitchListTile(
-                    contentPadding: EdgeInsets.all(6),
-                    controlAffinity: ListTileControlAffinity.leading,
-                    value: amostragemData
-                        .itemByIndex(widget.localIdAmostragem)
-                        .equipamento_energizado!,
-                    secondary: const Icon(Icons.battery_unknown_outlined),
-                    title: const Text("Equipamento Energizado?"),
-                    onChanged: (value) {
-                      setState(() {
-                        amostragemData
-                            .itemByIndex(widget.localIdAmostragem)
-                            .equipamento_energizado = value;
-                        amostragemData.notifyListeners();
-                      });
-                    }),
+              ImageInputWidget(
+                onSelectImage: selectImage,
+                storedImage:
+                    amostragemData.itemByIndex(widget.localIdAmostragem).image,
               ),
-            ),
-            // ImageInputWidget(
-            //   onSelectImage: selectImage,
-            //   storedImage:
-            //       amostragemData.itemByIndex(widget.localIdAmostragem).image,
-            // ),
-            SizedBox(
-              height: 50,
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                submitForm();
+              SizedBox(
+                height: 50,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  submitForm();
 
-                print(bluetoothStatus);
-
-                if (_connected) {
-                  printPaper(
-                    amostragemData.itemByIndex(widget.localIdAmostragem),
-                  );
-                  return;
-                }
-
-                await getDevices();
-
-                showModalBottomSheet(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        topRight: Radius.circular(15)),
-                  ),
-                  context: context,
-                  builder: (_) {
-                    return Column(
-                      children: [
-                        Stack(children: [
-                          const SizedBox(
-                            width: double.infinity,
-                            height: 56.0,
-                            child: Center(
-                                child: Text(
-                              "Selecione uma impressora",
-                              style: TextStyle(fontSize: 17),
-                            ) // Your desired title
-                                ),
-                          ),
-                          Positioned(
-                            left: 0.0,
-                            top: 0.0,
-                            child: IconButton(
-                              icon:
-                                  const Icon(Icons.close), // Your desired icon
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          )
-                        ]),
-                        Expanded(
-                          child: bluetoothStatus != 12
-                              ? const Center(
-                                  child: Text(
-                                    "Favor ligar o bluetooth",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                )
-                              : ListView.builder(
-                                  padding: const EdgeInsets.all(10),
-                                  itemCount: _devices.length,
-                                  itemBuilder: (ctx, index) {
-                                    return DevicesListItemWidget(
-                                      device: _devices[index].name ??
-                                          "Dispositivo Sem Nome",
-                                      index: index,
-                                      selectDevice: selectDevice,
-                                      localIdAmostragem:
-                                          widget.localIdAmostragem,
-                                    );
+                  getDevices().then((_) {
+                    showModalBottomSheet(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15)),
+                      ),
+                      context: context,
+                      builder: (_) {
+                        return Column(
+                          children: [
+                            Stack(children: [
+                              const SizedBox(
+                                width: double.infinity,
+                                height: 56.0,
+                                child: Center(
+                                    child: Text(
+                                  "Selecione uma impressora",
+                                  style: TextStyle(fontSize: 17),
+                                ) // Your desired title
+                                    ),
+                              ),
+                              Positioned(
+                                left: 0.0,
+                                top: 0.0,
+                                child: IconButton(
+                                  icon: const Icon(
+                                      Icons.close), // Your desired icon
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
                                   },
                                 ),
-                        ),
-                      ],
+                              )
+                            ]),
+                            Expanded(
+                              child: bluetoothStatus != 12
+                                  ? const Center(
+                                      child: Text(
+                                        "Favor ligar o bluetooth",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    )
+                                  : ListView.builder(
+                                      padding: const EdgeInsets.all(10),
+                                      itemCount: _devices.length,
+                                      itemBuilder: (ctx, index) {
+                                        return DevicesListItemWidget(
+                                          device: _devices[index].name ??
+                                              "Dispositivo Sem Nome",
+                                          index: index,
+                                          selectDevice: selectDevice,
+                                        );
+                                      },
+                                    ),
+                            ),
+                          ],
+                        );
+                      },
                     );
-                  },
-                );
-              },
-              child: const Icon(Icons.print_rounded, color: Colors.white),
-              style: ElevatedButton.styleFrom(
-                elevation: 5,
-                shape: const CircleBorder(),
-                padding: const EdgeInsets.all(20),
-                onPrimary: Colors.indigo[900],
-              ),
-            )
-          ],
+                  });
+                },
+                child: const Icon(Icons.print_rounded, color: Colors.white),
+                style: ElevatedButton.styleFrom(
+                  elevation: 5,
+                  shape: const CircleBorder(),
+                  padding: const EdgeInsets.all(20),
+                  onPrimary: Colors.indigo[900],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
   }
 
-  void selectDevice(int index, data) {
+  void selectDevice(int index) {
     _device = _devices[index];
     _connect();
-    printPaper(data);
+    printPaper();
+    // _disconnect();
   }
 
   void _connect() {
@@ -612,14 +606,25 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
     }
   }
 
-  printPaper(data) {
-    amostragemPrint!.printPage(pathImageLogo!, pathImageBarCode, data);
+  void _disconnect() {
+    bluetooth.disconnect();
+    setState(() => _connected = false);
+  }
+
+  printPaper() {
+    amostragemPrint!.printPage(
+        pathImageLogo!,
+        pathImageBarCode,
+        Provider.of<AmostragemModel>(
+          context,
+          listen: false,
+        ).itemByIndex(widget.localIdAmostragem));
     return;
   }
 
   Future<void> writeToFile(ByteData data, String path) {
     final buffer = data.buffer;
-    return new File(path).writeAsBytes(
+    return File(path).writeAsBytes(
         buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
   }
 }

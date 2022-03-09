@@ -78,18 +78,18 @@ class _ImageInputWidgetState extends State<ImageInputWidget> {
               border: Border.all(width: 1, color: Colors.grey),
             ),
             alignment: Alignment.center,
-            child: widget.storedImage != null
+            child: widget.storedImage!.path.isNotEmpty
                 ? Image.file(
                     widget.storedImage!,
                     width: double.infinity,
                     fit: BoxFit.cover,
                   )
-                : Text('Nenhuma Imagem'),
+                : const Text('Nenhuma Imagem'),
           ),
         ),
         Expanded(
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
             alignment: Alignment.center,
             child: TextButton.icon(
               onPressed: () {
