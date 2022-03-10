@@ -84,12 +84,6 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
 
     _formKey.currentState?.save();
 
-    if (_pickedImage != null) {
-      Provider.of<AmostragemModel>(
-        context,
-        listen: false,
-      ).items[widget.localIdAmostragem].image = _pickedImage;
-    }
     Provider.of<AmostragemModel>(
       context,
       listen: false,
@@ -173,6 +167,10 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
 
   void selectImage(File pickedImage) {
     _pickedImage = pickedImage;
+      Provider.of<AmostragemModel>(
+        context,
+        listen: false,
+      ).items[widget.localIdAmostragem].image = _pickedImage;
   }
 
   modalBottomSheet() {}
@@ -544,7 +542,7 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
                               )
                             ]),
                             Expanded(
-                              child: bluetoothStatus != 12
+                              child: bluetoothStatus == 10
                                   ? const Center(
                                       child: Text(
                                         "Favor ligar o bluetooth",
@@ -588,7 +586,10 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
   void selectDevice(int index) {
     _device = _devices[index];
     _connect();
+    Future.delayed(const Duration(milliseconds: 100), () {
     printPaper();
+    // _disconnect();
+    });
     // _disconnect();
   }
 

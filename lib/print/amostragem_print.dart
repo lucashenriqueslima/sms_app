@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 
@@ -31,7 +30,7 @@ class AmostragemPrint {
         bluetooth.printNewLine();
 //      bluetooth.printImageBytes(bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
         bluetooth.printCustom(
-            "${data.serie == "Sem Informação" ? "S/I" : data.serie} | ${data.tag == "SEM INFORMAÇÃO" ? "S/I" : data.tag} | ${data.sub_estacao == "Sem Informação" ? "S/I" : data.sub_estacao}",
+            "${data.serie == "SEM INFORMAÇÃO" ? "S/I" : data.serie} | ${data.tag == "SEM INFORMAÇÃO" ? "S/I" : data.tag} | ${data.sub_estacao == "SEM INFORMAÇÃO" ? "S/I" : data.sub_estacao}",
             1,
             1);
         bluetooth.printNewLine();

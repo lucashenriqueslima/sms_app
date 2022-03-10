@@ -46,12 +46,12 @@ class AmostragemModel with ChangeNotifier {
             idEquipamento: AmostragemData["NUM_EQUIP"],
             cod_barras: AmostragemData["cod_barras"],
             ensaio: AmostragemData["ensaio"],
-            serie: AmostragemData["SERIE"] ?? "Sem Informação",
-            tag: AmostragemData["DESIGNACAO"] ?? "Sem Informação",
-            sub_estacao: AmostragemData["SUBESTACAO"] ?? "Sem Informação",
-            tipo: AmostragemData["DESC_EQUIP"] ?? "Sem Informação",
-            potencia: AmostragemData["POTENCIA"] ?? "Sem Informação",
-            tensao: AmostragemData["TENSAO"] ?? "Sem Informação",
+            serie: AmostragemData["SERIE"] ?? "SEM INFORMAÇÃO",
+            tag: AmostragemData["DESIGNACAO"] ?? "SEM INFORMAÇÃO",
+            sub_estacao: AmostragemData["SUBESTACAO"] ?? "SEM INFORMAÇÃO",
+            tipo: AmostragemData["DESC_EQUIP"] ?? "SEM INFORMAÇÃO",
+            potencia: AmostragemData["POTENCIA"] ?? "SEM INFORMAÇÃO",
+            tensao: AmostragemData["TENSAO"] ?? "SEM INFORMAÇÃO",
             statusAmostragemItem: 1,
             temp_amostra: '',
             temp_enrolamento: '',
@@ -121,12 +121,12 @@ class AmostragemModel with ChangeNotifier {
       'idEquipamento': AmostragemData["NUM_EQUIP"],
       'cod_barras': AmostragemData["cod_barras"],
       'ensaio': AmostragemData["ensaio"],
-      'serie': AmostragemData["SERIE"] ?? "Sem Informação",
-      'tag': AmostragemData["DESIGNACAO"] ?? "Sem Informação",
-      'sub_estacao': AmostragemData["SUBESTACAO"] ?? "Sem Informação",
-      'tipo': AmostragemData["DESC_EQUIP"] ?? "Sem Informação",
-      'potencia': AmostragemData["POTENCIA"] ?? "Sem Informação",
-      'tensao': AmostragemData["TENSAO"] ?? "Sem Informação",
+      'serie': AmostragemData["SERIE"] ?? "SEM INFORMAÇÃO",
+      'tag': AmostragemData["DESIGNACAO"] ?? "SEM INFORMAÇÃO",
+      'sub_estacao': AmostragemData["SUBESTACAO"] ?? "SEM INFORMAÇÃO",
+      'tipo': AmostragemData["DESC_EQUIP"] ?? "SEM INFORMAÇÃO",
+      'potencia': AmostragemData["POTENCIA"] ?? "SEM INFORMAÇÃO",
+      'tensao': AmostragemData["TENSAO"] ?? "SEM INFORMAÇÃO",
     });
 
     DB.insert("amostragemLater", {
@@ -146,7 +146,8 @@ class AmostragemModel with ChangeNotifier {
 
   Future<void> updateAmostragemById(
       statusAmostragemItem, localIdAmostragem) async {
-    notifyListeners();
+
+        print(itemByIndex(localIdAmostragem).image);
     if (statusAmostragemItem == 2) {
       DB.update('''UPDATE amostragemLater
         SET statusAmostragemItem = $statusAmostragemItem,
@@ -163,8 +164,7 @@ class AmostragemModel with ChangeNotifier {
       return;
     }
 
-    DB.update('''
-UPDATE amostragemLater 
+    DB.update('''UPDATE amostragemLater 
         SET statusAmostragemItem = $statusAmostragemItem, 
         temp_amostra = '', 
         temp_enrolamento = '', 
