@@ -35,7 +35,6 @@ class PlanoAmostragemOnListItemWidget extends StatelessWidget {
             style: Theme.of(context).textTheme.subtitle2,
           ),
         ),
-        trailing: const Icon(Icons.arrow_forward_ios_rounded),
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(

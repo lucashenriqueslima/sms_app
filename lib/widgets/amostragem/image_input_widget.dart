@@ -6,7 +6,8 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as syspaths;
 
 class ImageInputWidget extends StatefulWidget {
-  ImageInputWidget({Key? key, required this.onSelectImage, this.storedImage});
+  ImageInputWidget({Key? key, required this.onSelectImage, this.storedImage})
+      : super(key: key);
   final Function onSelectImage;
   File? storedImage;
 
@@ -33,6 +34,7 @@ class _ImageInputWidgetState extends State<ImageInputWidget> {
     if (image == null) {
       return;
     }
+
     Navigator.of(context).pop();
     setState(() {
       widget.storedImage = File(image.path);

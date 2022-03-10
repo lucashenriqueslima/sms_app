@@ -22,6 +22,10 @@ class AmostragemModel with ChangeNotifier {
     return items.where((element) => element.idPlanoAmostragem == paId).toList();
   }
 
+  itemsByEquipamento() {
+    return {...items};
+  }
+
   Future<void> loadAmostragem(pa) async {
     items.clear();
     deleteAmostragem();
@@ -146,8 +150,7 @@ class AmostragemModel with ChangeNotifier {
 
   Future<void> updateAmostragemById(
       statusAmostragemItem, localIdAmostragem) async {
-
-        print(itemByIndex(localIdAmostragem).image);
+    print(itemByIndex(localIdAmostragem).image);
     if (statusAmostragemItem == 2) {
       DB.update('''UPDATE amostragemLater
         SET statusAmostragemItem = $statusAmostragemItem,
