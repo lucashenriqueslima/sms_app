@@ -1,19 +1,24 @@
-import 'package:asuka/snackbars/asuka_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 import 'package:sms_app/widgets/amostragem/amostragem_list_item_widget.dart';
+import 'package:sms_app/widgets/global/alert.dart';
 import 'package:sms_app/widgets/global/app_bar_widget.dart';
 import '../models/amostragem_model.dart';
 import 'home_page.dart';
 
 class AmostragemListPage extends StatefulWidget {
   const AmostragemListPage(
-      {Key? key, this.paId, this.reloaded = false, this.alert = ''})
+      {Key? key,
+      this.paId,
+      this.reloaded = false,
+      this.type = '',
+      this.alert = ''})
       : super(key: key);
 
   final dynamic paId;
   final bool reloaded;
+  final String type;
   final String alert;
 
   @override
@@ -23,8 +28,9 @@ class AmostragemListPage extends StatefulWidget {
 class _AmostragemListPageState extends State<AmostragemListPage> {
   bool _isLoading = true;
   _showSnackbar() {
-    if (widget.alert != '') {
-      AsukaSnackbar.success("").show();
+    if (widget.alert.isNotEmpty) {
+      return ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBarWidget.alert(widget.alert, widget.type));
     }
 
     return;

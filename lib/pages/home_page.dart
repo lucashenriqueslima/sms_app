@@ -34,6 +34,21 @@ class _HomePageState extends State<HomePage> {
     return;
   }
 
+  SnackBar test() {
+    return SnackBar(
+        duration: const Duration(seconds: 3),
+        elevation: 10.0,
+        content: Text(
+          widget.alert,
+          textAlign: TextAlign.center,
+        ),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.primary);
+  }
+
   @override
   void initState() {
     Future.delayed(const Duration(milliseconds: 200), () {

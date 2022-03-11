@@ -60,7 +60,13 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
     package_image.fill(image, package_image.getColor(255, 255, 255));
 
     // Draw the barcode
-    drawBarcode(image, Barcode.code39(), "12345678",
+    drawBarcode(
+        image,
+        Barcode.code39(),
+        Provider.of<AmostragemModel>(
+          context,
+          listen: false,
+        ).itemByIndex(widget.localIdAmostragem).cod_barras!,
         font: package_image.arial_24);
 
     // Save the image
@@ -194,6 +200,7 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
                   builder: (context) => AmostragemListPage(
                     reloaded: true,
                     paId: widget.idPlanoAmostragem,
+                    type: "success",
                     alert: "Amostragem salva com sucesso!",
                   ),
                 ),
@@ -218,20 +225,22 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
                   TextButton(
                     child: const Text('Sim'),
                     onPressed: () async {
-                      Navigator.of(context).pop(true);
-
                       Provider.of<AmostragemModel>(
                         context,
                         listen: false,
                       )
                           .updateAmostragemById(1, widget.localIdAmostragem)
                           .then((_) {
-                        Navigator.pushReplacement(
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => AmostragemListPage(
                               reloaded: true,
                               paId: widget.idPlanoAmostragem,
+                              alert: "Dados da amostragem descartados.",
+                              type: "warning",
                             ),
                           ),
                         );
@@ -587,7 +596,7 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
   void selectDevice(int index) {
     _device = _devices[index];
     _connect();
-    Future.delayed(const Duration(milliseconds: 100), () {
+    Future.delayed(const Duration(milliseconds: 200), () {
       printPaper();
       // _disconnect();
     });

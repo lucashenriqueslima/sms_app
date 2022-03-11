@@ -1,4 +1,3 @@
-
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 
 class AmostragemPrint {
@@ -60,11 +59,10 @@ class AmostragemPrint {
         bluetooth.printCustom("--------------------------------", 1, 1);
         bluetooth.printNewLine();
         bluetooth.printQRcode(
-            "https://labmetrix.com.br/etq.php?p=${data.cod_barras}",
+            "https://systrafo.com.br/etq.php?p=${data.cod_barras}",
             200,
             200,
             1);
-        bluetooth.printNewLine();
         bluetooth.printNewLine();
         bluetooth.printNewLine();
         bluetooth.paperCut();
