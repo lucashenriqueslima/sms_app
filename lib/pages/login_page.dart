@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
 
     Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => const HomePage(
-              alert: "Seja Bem-vindo,",
+              alert: "Seja bem-vindo",
             )));
   }
 

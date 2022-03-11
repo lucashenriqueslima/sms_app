@@ -167,10 +167,10 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
 
   void selectImage(File pickedImage) {
     _pickedImage = pickedImage;
-      Provider.of<AmostragemModel>(
-        context,
-        listen: false,
-      ).items[widget.localIdAmostragem].image = _pickedImage;
+    Provider.of<AmostragemModel>(
+      context,
+      listen: false,
+    ).items[widget.localIdAmostragem].image = _pickedImage;
   }
 
   modalBottomSheet() {}
@@ -194,6 +194,7 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
                   builder: (context) => AmostragemListPage(
                     reloaded: true,
                     paId: widget.idPlanoAmostragem,
+                    alert: "Amostragem salva com sucesso!",
                   ),
                 ),
               );
@@ -587,8 +588,8 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
     _device = _devices[index];
     _connect();
     Future.delayed(const Duration(milliseconds: 100), () {
-    printPaper();
-    // _disconnect();
+      printPaper();
+      // _disconnect();
     });
     // _disconnect();
   }

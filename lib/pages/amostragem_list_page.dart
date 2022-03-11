@@ -1,3 +1,4 @@
+import 'package:asuka/snackbars/asuka_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
@@ -7,12 +8,13 @@ import '../models/amostragem_model.dart';
 import 'home_page.dart';
 
 class AmostragemListPage extends StatefulWidget {
-  const AmostragemListPage({Key? key, this.paId, this.reloaded = false})
+  const AmostragemListPage(
+      {Key? key, this.paId, this.reloaded = false, this.alert = ''})
       : super(key: key);
 
   final dynamic paId;
-
   final bool reloaded;
+  final String alert;
 
   @override
   _AmostragemListPageState createState() => _AmostragemListPageState();
@@ -20,6 +22,13 @@ class AmostragemListPage extends StatefulWidget {
 
 class _AmostragemListPageState extends State<AmostragemListPage> {
   bool _isLoading = true;
+  _showSnackbar() {
+    if (widget.alert != '') {
+      AsukaSnackbar.success("").show();
+    }
+
+    return;
+  }
 
   @override
   void initState() {
@@ -33,7 +42,7 @@ class _AmostragemListPageState extends State<AmostragemListPage> {
         setState(() {
           _isLoading = false;
         });
-      });
+      }).then((value) => _showSnackbar());
 
       return;
     }

@@ -4,6 +4,7 @@ import 'package:sms_app/models/amostragem_model.dart';
 import 'package:sms_app/models/plano_amostragem_model.dart';
 import 'package:sms_app/models/user_model.dart';
 import 'package:sms_app/pages/autentication_page.dart';
+import 'package:asuka/asuka.dart' as asuka;
 
 import 'models/plano_amostragem_on_model.dart';
 
@@ -96,6 +97,10 @@ class MyApp extends StatelessWidget {
                 ),
               ),
         ),
+        builder: asuka.builder,
+        navigatorObservers: [
+          asuka.asukaHeroController //if u don`t add this Hero will not work
+        ],
         home: const AutenticationPage(),
       ),
     );
