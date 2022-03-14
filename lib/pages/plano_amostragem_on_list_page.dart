@@ -102,19 +102,17 @@ class _PlanoAmostragemOnListPageState extends State<PlanoAmostragemOnListPage> {
           ? const Center(child: CircularProgressIndicator())
           : WillPopScope(
               onWillPop: showDialogOnPop,
-              child: Padding(
+              child: ListView.builder(
                 padding: const EdgeInsets.all(10.0),
-                child: ListView.builder(
-                  itemCount: planoOnData.itemsCount,
-                  itemBuilder: (ctx, index) {
-                    return Card(
-                      elevation: 4,
-                      child: PlanoAmostragemOnListItemWidget(
-                        planoOnData: planoOnData.items[index],
-                      ),
-                    );
-                  },
-                ),
+                itemCount: planoOnData.itemsCount,
+                itemBuilder: (ctx, index) {
+                  return Card(
+                    elevation: 4,
+                    child: PlanoAmostragemOnListItemWidget(
+                      planoOnData: planoOnData.items[index],
+                    ),
+                  );
+                },
               ),
             ),
     );

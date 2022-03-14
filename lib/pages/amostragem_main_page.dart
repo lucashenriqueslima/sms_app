@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sms_app/models/amostragem_model.dart';
 import 'package:sms_app/pages/amostragem_info_page.dart';
 import './amostragem_form_page.dart';
-import 'amostragem_list_page.dart';
+import 'amostragem_by_pa_list_page.dart';
 
 class AmostragemMainPage extends StatefulWidget {
   const AmostragemMainPage(
@@ -58,8 +58,7 @@ class _AmostragemMainPageState extends State<AmostragemMainPage> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => AmostragemListPage(
-                            reloaded: true,
+                          builder: (context) => AmostragemByPaListPage(
                             paId: widget.idPlanoAmostragem,
                           ),
                         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sms_app/class/amostragem_class.dart';
 import 'dart:io';
 import 'package:sms_app/widgets/amostragem/amostragem_list_item_widget.dart';
 import 'package:sms_app/widgets/global/alert.dart';
@@ -7,17 +8,12 @@ import 'package:sms_app/widgets/global/app_bar_widget.dart';
 import '../models/amostragem_model.dart';
 import 'home_page.dart';
 
-class AmostragemListPage extends StatefulWidget {
-  const AmostragemListPage(
-      {Key? key,
-      this.paId,
-      this.reloaded = false,
-      this.type = '',
-      this.alert = ''})
+class AmostragemByPaListPage extends StatefulWidget {
+  const AmostragemByPaListPage(
+      {Key? key, required this.paId, this.type = '', this.alert = ''})
       : super(key: key);
 
   final dynamic paId;
-  final bool reloaded;
   final String type;
   final String alert;
 
@@ -25,7 +21,16 @@ class AmostragemListPage extends StatefulWidget {
   _AmostragemListPageState createState() => _AmostragemListPageState();
 }
 
-class _AmostragemListPageState extends State<AmostragemListPage> {
+class _AmostragemListPageState extends State<AmostragemByPaListPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    _showSnackbar();
+
+    return;
+  }
+
   bool _isLoading = true;
   _showSnackbar() {
     if (widget.alert.isNotEmpty) {
@@ -37,28 +42,11 @@ class _AmostragemListPageState extends State<AmostragemListPage> {
   }
 
   @override
-  void initState() {
-    super.initState();
-
-    if (widget.reloaded) {
-      Provider.of<AmostragemModel>(
-        context,
-        listen: false,
-      ).reloadAmostragem().then((value) {
-        setState(() {
-          _isLoading = false;
-        });
-      }).then((value) => _showSnackbar());
-
-      return;
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     AmostragemModel amostragemData = Provider.of(context);
 
-    var amostragemByPaId = amostragemData.itemsByPlanoAmostragem(widget.paId);
+    List<AmostragemClass> amostragemByPlanoAmostragem =
+        amostragemData.itemsByPlanoAmostragem(widget.paId);
 
     Future<bool?> getConnection() async {
       try {
@@ -127,7 +115,8 @@ class _AmostragemListPageState extends State<AmostragemListPage> {
     }
 
     return Scaffold(
-      appBar: AppBarWidget(title: widget.paId.toString()),
+      appBar:
+          AppBarWidget(title: "Plano de Amostragem ${widget.paId.toString()}"),
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(),
@@ -137,12 +126,12 @@ class _AmostragemListPageState extends State<AmostragemListPage> {
               children: [
                 Expanded(
                   child: ListView.builder(
-                    itemCount: amostragemByPaId.length,
+                    itemCount: amostragemByPlanoAmostragem.length,
                     itemBuilder: (ctx, index) {
                       return Card(
                         elevation: 4,
                         child: AmostragemListItemWidget(
-                          data: amostragemByPaId[index],
+                          data: amostragemByPlanoAmostragem[index],
                         ),
                       );
                     },

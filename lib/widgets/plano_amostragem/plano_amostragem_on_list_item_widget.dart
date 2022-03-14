@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sms_app/class/plano_amostragem_class.dart';
-import 'package:sms_app/pages/amostragem_list_page.dart';
+import 'package:sms_app/pages/amostragem_by_pa_list_page.dart';
 
 class PlanoAmostragemOnListItemWidget extends StatelessWidget {
   const PlanoAmostragemOnListItemWidget({
@@ -38,7 +38,7 @@ class PlanoAmostragemOnListItemWidget extends StatelessWidget {
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => AmostragemListPage(
+              builder: (context) => AmostragemByPaListPage(
                 paId: planoOnData.idPlanoAmostragem,
                 reloaded: true,
               ),

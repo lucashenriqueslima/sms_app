@@ -18,12 +18,38 @@ class AmostragemModel with ChangeNotifier {
     return items.length;
   }
 
-  itemsByPlanoAmostragem(paId) {
-    return items.where((element) => element.idPlanoAmostragem == paId).toList();
+  List<AmostragemClass> itemsByPlanoAmostragem(paId) {
+    List<AmostragemClass> itemsByEquipamento = [];
+    List<AmostragemClass> itemsByPlanoAmostragem =
+        items.where((element) => element.idPlanoAmostragem == paId).toList();
+
+    if (itemsByPlanoAmostragem.length == 1) {
+      return itemsByPlanoAmostragem;
+    }
+
+    for (int i = 0; i < itemsByPlanoAmostragem.length - 1; i++) {
+      if (itemsByPlanoAmostragem[i].idEquipamento !=
+          itemsByPlanoAmostragem[i + 1].idEquipamento) {
+        itemsByEquipamento.add(itemsByPlanoAmostragem[i]);
+      }
+    }
+
+    if (itemsByPlanoAmostragem[itemsByPlanoAmostragem.length - 1]
+            .idEquipamento !=
+        itemsByPlanoAmostragem[itemsByPlanoAmostragem.length - 2]
+            .idEquipamento) {
+      itemsByEquipamento.add(itemsByPlanoAmostragem[-1]);
+    }
+
+    return itemsByEquipamento;
   }
 
-  itemsByEquipamento() {
-    return {...items};
+  List<AmostragemClass> itemsByEquipamento(idEquipamento, paId) {
+    return items
+        .where((element) =>
+            element.idEquipamento == idEquipamento &&
+            element.idPlanoAmostragem == paId)
+        .toList();
   }
 
   Future<void> loadAmostragem(pa) async {

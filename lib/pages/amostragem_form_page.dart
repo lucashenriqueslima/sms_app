@@ -12,7 +12,7 @@ import 'dart:async';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-import 'amostragem_list_page.dart';
+import 'amostragem_by_pa_list_page.dart';
 
 class AmostragemFormPage extends StatefulWidget {
   const AmostragemFormPage({
@@ -197,8 +197,7 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AmostragemListPage(
-                    reloaded: true,
+                  builder: (context) => AmostragemByPaListPage(
                     paId: widget.idPlanoAmostragem,
                     type: "success",
                     alert: "Amostragem salva com sucesso!",
@@ -236,8 +235,7 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AmostragemListPage(
-                              reloaded: true,
+                            builder: (context) => AmostragemByPaListPage(
                               paId: widget.idPlanoAmostragem,
                               alert: "Dados da amostragem descartados.",
                               type: "warning",

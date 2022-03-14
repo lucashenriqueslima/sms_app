@@ -1,42 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sms_app/class/amostragem_class.dart';
-import 'package:sms_app/pages/amostragem_by_equipamento_list_page.dart';
 
-import 'package:sms_app/pages/amostragem_main_page.dart';
-
-class AmostragemListItemWidget extends StatelessWidget {
-  AmostragemListItemWidget({Key? key, required this.data}) : super(key: key);
-
-  Color? backgroundColorCircleAvatar(statusAmostragem) {
-    if (statusAmostragem == 1) {
-      return Colors.grey[700];
-    }
-
-    return Colors.green[600];
-  }
-
-  Icon iconCircleAvatar(statusAmostragem) {
-    if (statusAmostragem == 0) {
-      return const Icon(
-        Icons.warning_amber_rounded,
-        size: 28,
-      );
-    }
-
-    if (statusAmostragem == 1) {
-      return const Icon(
-        Icons.double_arrow_rounded,
-        size: 28,
-      );
-    }
-
-    return const Icon(
-      Icons.check,
-      size: 28,
-    );
-  }
-
-  final AmostragemClass data;
+class AmostragemByEquipamentoItemListWidget extends StatelessWidget {
+  const AmostragemByEquipamentoItemListWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
