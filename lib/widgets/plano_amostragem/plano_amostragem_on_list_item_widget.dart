@@ -40,7 +40,6 @@ class PlanoAmostragemOnListItemWidget extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) => AmostragemByPaListPage(
                 paId: planoOnData.idPlanoAmostragem,
-                reloaded: true,
               ),
             ),
           );

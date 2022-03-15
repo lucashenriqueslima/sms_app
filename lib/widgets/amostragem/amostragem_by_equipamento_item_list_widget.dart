@@ -1,7 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:sms_app/class/amostragem_class.dart';
+import 'package:sms_app/pages/amostragem_form_page.dart';
 
 class AmostragemByEquipamentoItemListWidget extends StatelessWidget {
-  const AmostragemByEquipamentoItemListWidget({Key? key}) : super(key: key);
+  const AmostragemByEquipamentoItemListWidget({Key? key, required this.data})
+      : super(key: key);
+
+  Color? backgroundColorCircleAvatar(statusAmostragem) {
+    if (statusAmostragem == 1) {
+      return Colors.grey[700];
+    }
+
+    return Colors.green[600];
+  }
+
+  Icon iconCircleAvatar(statusAmostragem) {
+    if (statusAmostragem == 0) {
+      return const Icon(
+        Icons.warning_amber_rounded,
+        size: 28,
+      );
+    }
+
+    if (statusAmostragem == 1) {
+      return const Icon(
+        Icons.double_arrow_rounded,
+        size: 28,
+      );
+    }
+
+    return const Icon(
+      Icons.check,
+      size: 28,
+    );
+  }
+
+  final data;
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +66,9 @@ class AmostragemByEquipamentoItemListWidget extends StatelessWidget {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => AmostragemByEquipamentoListPage(
-                idEquipamento: data.idEquipamento!,
-                paId: data.idPlanoAmostragem!,
-              ),
+              builder: (context) => AmostragemFormPage(
+                  localIdAmostragem: data.localIdAmostragem,
+                  idPlanoAmostragem: data.idPlanoAmostragem),
             ),
           );
 
