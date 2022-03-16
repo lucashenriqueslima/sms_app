@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_app/models/amostragem_model.dart';
+import 'package:sms_app/pages/amostragem_by_equipamento_list_page.dart';
 import 'package:sms_app/pages/amostragem_info_page.dart';
 import './amostragem_form_page.dart';
 import 'amostragem_by_pa_list_page.dart';
@@ -48,21 +49,13 @@ class _AmostragemMainPageState extends State<AmostragemMainPage> {
                 TextButton(
                   child: const Text('Sim'),
                   onPressed: () async {
-                    Navigator.of(context).pop(true);
                     Provider.of<AmostragemModel>(
                       context,
                       listen: false,
                     )
                         .updateAmostragemById(1, widget.localIdAmostragem)
                         .then((_) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AmostragemByPaListPage(
-                            paId: widget.idPlanoAmostragem,
-                          ),
-                        ),
-                      );
+                      Navigator.of(context).pop(true);
                     });
                   },
                 ),

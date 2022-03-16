@@ -48,8 +48,10 @@ class AmostragemPrint {
         bluetooth.printNewLine();
         bluetooth.printLeftRight("T. Ambiente:", "${data.temp_ambiente} C", 3);
         bluetooth.printNewLine();
+        bluetooth.printLeftRight("Umidade:", "${data.umidade_relativa} C", 3);
+        bluetooth.printNewLine();
         bluetooth.printLeftRight(
-            "T. Umidade:", "${data.umidade_relativa} C", 3);
+            "E. Energizado:", "${data.equipamento_energizado ? "S" : "N"}", 3);
         bluetooth.printNewLine();
         bluetooth.printCustom("--------------------------------", 1, 1);
         bluetooth.printNewLine();

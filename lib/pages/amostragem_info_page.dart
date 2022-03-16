@@ -12,7 +12,9 @@ class AmostragemInfoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text("Informações"), centerTitle: true, leading: null),
+          title: const Text("Informações"),
+          centerTitle: true,
+          leading: SizedBox()),
       body: ListView(
         children: [
           Card(

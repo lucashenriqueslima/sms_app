@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sms_app/class/amostragem_class.dart';
 import 'package:sms_app/pages/amostragem_form_page.dart';
+import 'package:sms_app/pages/amostragem_main_page.dart';
 
 class AmostragemByEquipamentoItemListWidget extends StatelessWidget {
   const AmostragemByEquipamentoItemListWidget({Key? key, required this.data})
@@ -48,13 +49,13 @@ class AmostragemByEquipamentoItemListWidget extends StatelessWidget {
           child: iconCircleAvatar(data.statusAmostragemItem),
         ),
         title: Text(
-          "${data.serie} - ${data.tag}",
+          "Etiqueta: ${data.cod_barras}",
           style: Theme.of(context).textTheme.headline3,
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 10.0),
           child: Text(
-            " ${data.sub_estacao} | ${data.tipo}",
+            "Ensaios: ${data.ensaio}",
             style: Theme.of(context).textTheme.subtitle2,
           ),
         ),
@@ -63,10 +64,10 @@ class AmostragemByEquipamentoItemListWidget extends StatelessWidget {
           child: Icon(Icons.arrow_forward_ios_rounded),
         ),
         onTap: () {
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AmostragemFormPage(
+              builder: (context) => AmostragemMainPage(
                   localIdAmostragem: data.localIdAmostragem!,
                   idPlanoAmostragem: data.idPlanoAmostragem!),
             ),

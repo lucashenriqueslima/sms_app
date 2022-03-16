@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sms_app/class/amostragem_class.dart';
+import 'package:sms_app/models/amostragem_model.dart';
 import 'package:sms_app/pages/amostragem_by_equipamento_list_page.dart';
-
-import 'package:sms_app/pages/amostragem_main_page.dart';
 
 class AmostragemListItemWidget extends StatelessWidget {
   AmostragemListItemWidget({Key? key, required this.data}) : super(key: key);
@@ -40,6 +40,7 @@ class AmostragemListItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AmostragemModel amostragemData = Provider.of(context);
     return ListTile(
         contentPadding: const EdgeInsets.all(5),
         leading: CircleAvatar(
@@ -54,7 +55,7 @@ class AmostragemListItemWidget extends StatelessWidget {
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 10.0),
           child: Text(
-            " ${data.sub_estacao} | Amostras restantes: 1",
+            " ${data.sub_estacao} | Amostras pendentes: ${amostragemData.items.where((element) => element.idEquipamento == data.idEquipamento && element.idPlanoAmostragem == data.idPlanoAmostragem && element.statusAmostragemItem != 2).length}",
             style: Theme.of(context).textTheme.subtitle2,
           ),
         ),

@@ -194,18 +194,6 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
             onPressed: () {
               submitForm();
               Navigator.pop(context);
-              Navigator.pop(context);
-
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AmostragemByPaListPage(
-                    paId: widget.idPlanoAmostragem,
-                    type: "success",
-                    alert: "Amostragem salva com sucesso!",
-                  ),
-                ),
-              );
             },
             icon: const Icon(Icons.check),
           )
@@ -234,16 +222,6 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
                           .then((_) {
                         Navigator.of(context).pop();
                         Navigator.of(context).pop();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AmostragemByPaListPage(
-                              paId: widget.idPlanoAmostragem,
-                              alert: "Dados da amostragem descartados.",
-                              type: "warning",
-                            ),
-                          ),
-                        );
                       });
                     },
                   ),
@@ -559,18 +537,25 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
                                         style: TextStyle(fontSize: 18),
                                       ),
                                     )
-                                  : ListView.builder(
-                                      padding: const EdgeInsets.all(10),
-                                      itemCount: _devices.length,
-                                      itemBuilder: (ctx, index) {
-                                        return DevicesListItemWidget(
-                                          device: _devices[index].name ??
-                                              "Dispositivo Sem Nome",
-                                          index: index,
-                                          selectDevice: selectDevice,
-                                        );
-                                      },
-                                    ),
+                                  : _devices.isNotEmpty
+                                      ? ListView.builder(
+                                          padding: const EdgeInsets.all(10),
+                                          itemCount: _devices.length,
+                                          itemBuilder: (ctx, index) {
+                                            return DevicesListItemWidget(
+                                              device: _devices[index].name ??
+                                                  "Dispositivo Sem Nome",
+                                              index: index,
+                                              selectDevice: selectDevice,
+                                            );
+                                          },
+                                        )
+                                      : const Center(
+                                          child: Text(
+                                            "Nenhum dispositivo encontrado!",
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                        ),
                             ),
                           ],
                         );
@@ -596,11 +581,9 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
   void selectDevice(int index) {
     _device = _devices[index];
     _connect();
-    Future.delayed(const Duration(milliseconds: 200), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       printPaper();
-      // _disconnect();
     });
-    // _disconnect();
   }
 
   void _connect() {

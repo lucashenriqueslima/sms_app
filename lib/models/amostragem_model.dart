@@ -23,8 +23,6 @@ class AmostragemModel with ChangeNotifier {
     List<AmostragemClass> itemsByPlanoAmostragem =
         items.where((element) => element.idPlanoAmostragem == paId).toList();
 
-    print(itemsByPlanoAmostragem.length);
-    print(itemsByPlanoAmostragem[1].serie);
     if (itemsByPlanoAmostragem.length == 1) {
       print("asdasd");
       return itemsByPlanoAmostragem;
@@ -175,6 +173,10 @@ class AmostragemModel with ChangeNotifier {
 
   Future<void> updateAmostragemById(
       statusAmostragemItem, localIdAmostragem) async {
+    items[localIdAmostragem].statusAmostragemItem = statusAmostragemItem;
+
+    notifyListeners();
+
     if (statusAmostragemItem == 2) {
       DB.update('''UPDATE amostragemLater
         SET statusAmostragemItem = $statusAmostragemItem,
