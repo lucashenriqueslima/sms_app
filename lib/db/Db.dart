@@ -49,7 +49,7 @@ class DB {
     return await openDatabase(
         join(
           await getDatabasesPath(),
-          "samplemanagersystem7.db",
+          "samplemanagersystem8.db",
         ),
         version: 1,
         onCreate: _onCreate);

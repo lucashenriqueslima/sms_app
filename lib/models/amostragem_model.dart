@@ -23,7 +23,10 @@ class AmostragemModel with ChangeNotifier {
     List<AmostragemClass> itemsByPlanoAmostragem =
         items.where((element) => element.idPlanoAmostragem == paId).toList();
 
+    print(itemsByPlanoAmostragem.length);
+    print(itemsByPlanoAmostragem[1].serie);
     if (itemsByPlanoAmostragem.length == 1) {
+      print("asdasd");
       return itemsByPlanoAmostragem;
     }
 
@@ -34,12 +37,8 @@ class AmostragemModel with ChangeNotifier {
       }
     }
 
-    if (itemsByPlanoAmostragem[itemsByPlanoAmostragem.length - 1]
-            .idEquipamento !=
-        itemsByPlanoAmostragem[itemsByPlanoAmostragem.length - 2]
-            .idEquipamento) {
-      itemsByEquipamento.add(itemsByPlanoAmostragem[-1]);
-    }
+    itemsByEquipamento
+        .add(itemsByPlanoAmostragem[itemsByPlanoAmostragem.length - 1]);
 
     return itemsByEquipamento;
   }
@@ -176,7 +175,6 @@ class AmostragemModel with ChangeNotifier {
 
   Future<void> updateAmostragemById(
       statusAmostragemItem, localIdAmostragem) async {
-    print(itemByIndex(localIdAmostragem).image);
     if (statusAmostragemItem == 2) {
       DB.update('''UPDATE amostragemLater
         SET statusAmostragemItem = $statusAmostragemItem,

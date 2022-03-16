@@ -26,12 +26,12 @@ class _AmostragemListPageState extends State<AmostragemByPaListPage> {
   void initState() {
     super.initState();
 
-    _showSnackbar();
+    // _showSnackbar();
 
     return;
   }
 
-  bool _isLoading = true;
+  bool _isLoading = false;
   _showSnackbar() {
     if (widget.alert.isNotEmpty) {
       return ScaffoldMessenger.of(context)

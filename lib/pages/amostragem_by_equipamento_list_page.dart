@@ -28,7 +28,13 @@ class _AmostragemByEquipamentoListPageState
         amostragemData.itemsByEquipamento(widget.idEquipamento, widget.paId);
 
     return Scaffold(
-      appBar: AppBarWidget(title: "Ensaio(s)"),
+      appBar: AppBar(
+        title: Text(
+          "${amostragemByEquipamento[0].serie} | ${amostragemByEquipamento[0].tag}",
+          style: TextStyle(fontFamily: "'RobotoCondensed'"),
+        ),
+        centerTitle: true,
+      ),
       body: ListView.builder(
         padding: const EdgeInsets.all(10.0),
         itemCount: amostragemByEquipamento.length,
@@ -36,7 +42,7 @@ class _AmostragemByEquipamentoListPageState
           return Card(
               elevation: 4,
               child: AmostragemByEquipamentoItemListWidget(
-                data: amostragemByEquipamento,
+                data: amostragemByEquipamento[index],
               ));
         },
       ),

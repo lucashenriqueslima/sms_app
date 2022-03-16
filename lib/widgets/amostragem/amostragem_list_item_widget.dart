@@ -43,10 +43,9 @@ class AmostragemListItemWidget extends StatelessWidget {
     return ListTile(
         contentPadding: const EdgeInsets.all(5),
         leading: CircleAvatar(
-          backgroundColor:
-              backgroundColorCircleAvatar(data.statusAmostragemItem),
+          backgroundColor: Colors.blue,
           radius: 40,
-          child: iconCircleAvatar(data.statusAmostragemItem),
+          child: Icon(Icons.takeout_dining_outlined),
         ),
         title: Text(
           "${data.serie} - ${data.tag}",
@@ -55,7 +54,7 @@ class AmostragemListItemWidget extends StatelessWidget {
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 10.0),
           child: Text(
-            " ${data.sub_estacao} | ${data.tipo}",
+            " ${data.sub_estacao} | Amostras restantes: 1",
             style: Theme.of(context).textTheme.subtitle2,
           ),
         ),
@@ -64,7 +63,7 @@ class AmostragemListItemWidget extends StatelessWidget {
           child: Icon(Icons.arrow_forward_ios_rounded),
         ),
         onTap: () {
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => AmostragemByEquipamentoListPage(

@@ -35,7 +35,7 @@ class AmostragemByEquipamentoItemListWidget extends StatelessWidget {
     );
   }
 
-  final data;
+  final AmostragemClass data;
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +67,8 @@ class AmostragemByEquipamentoItemListWidget extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => AmostragemFormPage(
-                  localIdAmostragem: data.localIdAmostragem,
-                  idPlanoAmostragem: data.idPlanoAmostragem),
+                  localIdAmostragem: data.localIdAmostragem!,
+                  idPlanoAmostragem: data.idPlanoAmostragem!),
             ),
           );
 

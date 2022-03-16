@@ -28,11 +28,16 @@ class _PlanoAmostragemOnListPageState extends State<PlanoAmostragemOnListPage> {
       Provider.of<PlanoAmostragemOnModel>(
         context,
         listen: false,
-      ).reloadPlanoAmostragemOn().then((value) {
-        setState(() {
-          _isLoading = false;
-        });
-      });
+      )
+          .reloadPlanoAmostragemOn()
+          .then((value) {})
+          .then((value) => Provider.of<AmostragemModel>(
+                context,
+                listen: false,
+              ).reloadAmostragem())
+          .then((value) => setState(() {
+                _isLoading = false;
+              }));
 
       return;
     }

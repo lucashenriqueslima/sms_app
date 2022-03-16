@@ -193,6 +193,8 @@ class _AmostragemFormPageState extends State<AmostragemFormPage> {
           IconButton(
             onPressed: () {
               submitForm();
+              Navigator.pop(context);
+              Navigator.pop(context);
 
               Navigator.pushReplacement(
                 context,
