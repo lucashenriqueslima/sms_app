@@ -1,0 +1,103 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:sms_app/widgets/amostragem/modal_image_picker_widget.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart' as syspaths;
+
+class ImageInputWidget extends StatefulWidget {
+  ImageInputWidget({Key? key, required this.onSelectImage, this.storedImage})
+      : super(key: key);
+  final Function onSelectImage;
+  File? storedImage;
+
+  @override
+  _ImageInputWidgetState createState() => _ImageInputWidgetState();
+}
+
+class _ImageInputWidgetState extends State<ImageInputWidget> {
+  void openModalImagePicker(pickerCamera, pickerGallery) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return ModalImagePickerWidget(
+          takePictureByCamera: pickerCamera,
+          takePictureByGallery: pickerGallery,
+        );
+      },
+    );
+  }
+
+  takePictureByCamera() async {
+    XFile? image = await ImagePicker().pickImage(source: ImageSource.camera);
+
+    if (image == null) {
+      return;
+    }
+
+    Navigator.of(context).pop();
+    setState(() {
+      widget.storedImage = File(image.path);
+    });
+
+    final appDir = await syspaths.getApplicationDocumentsDirectory();
+    String fileName = path.basename(widget.storedImage!.path);
+    final savedImage = await widget.storedImage!.copy(
+      '${appDir.path}/$fileName',
+    );
+    widget.onSelectImage(savedImage);
+  }
+
+  takePictureByGallery() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (image == null) {
+      return;
+    }
+    Navigator.of(context).pop();
+    setState(() {
+      widget.storedImage = File(image.path);
+    });
+
+    final appDir = await syspaths.getApplicationDocumentsDirectory();
+    String fileName = path.basename(widget.storedImage!.path);
+    final savedImage = await widget.storedImage!.copy(
+      '${appDir.path}/$fileName',
+    );
+    widget.onSelectImage(savedImage);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width * 0.55,
+          height: 120,
+          decoration: BoxDecoration(
+            border: Border.all(width: 1, color: Colors.grey),
+          ),
+          alignment: Alignment.center,
+          child: widget.storedImage!.path.isNotEmpty
+              ? Image.file(
+                  widget.storedImage!,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                )
+              : const Text('Nenhuma Imagem'),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: TextButton.icon(
+            onPressed: () {
+              openModalImagePicker(takePictureByCamera, takePictureByGallery);
+            },
+            icon: Icon(Icons.camera),
+            label: Text("Adicionar Imagem"),
+          ),
+        )
+      ],
+    );
+  }
+}

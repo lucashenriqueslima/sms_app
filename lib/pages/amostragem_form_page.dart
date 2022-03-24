@@ -1,0 +1,649 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:location/location.dart';
+import 'package:provider/provider.dart';
+import 'package:sms_app/models/amostragem_model.dart';
+import 'package:sms_app/print/amostragem_print.dart';
+import 'package:sms_app/widgets/amostragem/devices_list_item_widget.dart';
+import 'package:sms_app/widgets/amostragem/image_input_widget.dart';
+import 'package:image/image.dart' as package_image;
+import 'package:barcode_image/barcode_image.dart';
+import 'dart:async';
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import '../models/plano_amostragem_on_model.dart';
+
+class AmostragemFormPage extends StatefulWidget {
+  const AmostragemFormPage({
+    Key? key,
+    required this.localIdAmostragem,
+    required this.idPlanoAmostragem,
+  }) : super(key: key);
+
+  final int localIdAmostragem;
+  final int idPlanoAmostragem;
+
+  @override
+  State<AmostragemFormPage> createState() => _AmostragemFormPageState();
+}
+
+class _AmostragemFormPageState extends State<AmostragemFormPage> {
+  final _formKey = GlobalKey<FormState>();
+  BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
+  int bluetoothStatus = 0;
+  List<BluetoothDevice> _devices = [];
+  BluetoothDevice? _device;
+  bool _connected = false;
+  String? pathImageLogo;
+  String? pathImageBarCode;
+  File? _pickedImage;
+  AmostragemPrint? amostragemPrint;
+
+  @override
+  void initState() {
+    super.initState();
+    getBluetoothStatus();
+    initSavetoPath();
+    amostragemPrint = AmostragemPrint();
+  }
+
+  initSavetoPath() async {
+    //read and write
+    //image max 300px X 300px
+
+    String dir = (await getApplicationDocumentsDirectory()).path;
+
+    final image = package_image.Image(300, 150);
+
+    // Fill it with a solid color (white)
+    package_image.fill(image, package_image.getColor(255, 255, 255));
+
+    // Draw the barcode
+    drawBarcode(
+        image,
+        Barcode.code39(),
+        Provider.of<AmostragemModel>(
+          context,
+          listen: false,
+        ).itemByIndex(widget.localIdAmostragem).cod_barras,
+        font: package_image.arial_24);
+
+    // Save the image
+    File('$dir/barcode.png').writeAsBytesSync(package_image.encodePng(image));
+
+    const String filename = 'logo_acs_etq.png';
+    var bytes = await rootBundle.load("assets/images/logo_acs_etq.png");
+    writeToFile(bytes, '$dir/$filename');
+    setState(() {
+      pathImageLogo = '$dir/$filename';
+      pathImageBarCode = '$dir/barcode.png';
+    });
+  }
+
+  Future<List<String>> _getLocation() async {
+    final currentLocation = await Location().getLocation();
+
+    return [
+      currentLocation.latitude.toString(),
+      currentLocation.longitude.toString()
+    ];
+  }
+
+  Future<void> submitForm(type) async {
+    final isValid = _formKey.currentState?.validate() ?? false;
+
+    if (!isValid) {
+      return;
+    }
+
+    if (type == 2) {
+      _formKey.currentState?.save();
+    }
+
+    await Provider.of<AmostragemModel>(
+      context,
+      listen: false,
+    ).updateAmostragemById(type, widget.localIdAmostragem,
+        location: await _getLocation());
+  }
+
+  Future<void> getBluetoothStatus() async {
+    bluetooth.onStateChanged().listen((state) {
+      switch (state) {
+        case BlueThermalPrinter.CONNECTED:
+          setState(() {
+            _connected = true;
+            bluetoothStatus = BlueThermalPrinter.CONNECTED;
+          });
+          break;
+        case BlueThermalPrinter.DISCONNECTED:
+          setState(() {
+            _connected = false;
+          });
+          break;
+        case BlueThermalPrinter.DISCONNECT_REQUESTED:
+          setState(() {
+            _connected = false;
+          });
+          break;
+        case BlueThermalPrinter.STATE_TURNING_OFF:
+          setState(() {
+            _connected = false;
+          });
+          break;
+        case BlueThermalPrinter.STATE_OFF:
+          setState(() {
+            _connected = false;
+            bluetoothStatus = BlueThermalPrinter.STATE_OFF;
+          });
+          break;
+        case BlueThermalPrinter.STATE_ON:
+          setState(() {
+            bluetoothStatus = BlueThermalPrinter.STATE_ON;
+          });
+          break;
+        case BlueThermalPrinter.STATE_TURNING_ON:
+          setState(() {
+            _connected = false;
+          });
+          break;
+        case BlueThermalPrinter.ERROR:
+          setState(() {
+            _connected = false;
+          });
+          break;
+        default:
+          break;
+      }
+    });
+  }
+
+  Future<void> getDevices() async {
+    bool? isConnected = await bluetooth.isConnected;
+    List<BluetoothDevice> devices = [];
+
+    try {
+      devices = await bluetooth.getBondedDevices();
+    } on PlatformException {
+      // TODO - Error
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _devices = devices;
+    });
+
+    if (isConnected!) {
+      setState(() {
+        _connected = true;
+      });
+    }
+  }
+
+  void selectImage(File pickedImage) {
+    _pickedImage = pickedImage;
+    Provider.of<AmostragemModel>(
+      context,
+      listen: false,
+    ).items[widget.localIdAmostragem].image = _pickedImage;
+  }
+
+  modalBottomSheet() {}
+
+  @override
+  Widget build(BuildContext context) {
+    AmostragemModel amostragemData = Provider.of(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Formulário"),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              submitForm(2).then((_) {
+                Navigator.pop(context, {
+                  'type': "success",
+                  'etq': amostragemData
+                      .itemByIndex(widget.localIdAmostragem)
+                      .cod_barras
+                });
+              });
+            },
+            icon: const Icon(Icons.check),
+          )
+        ],
+        leading: IconButton(
+          onPressed: () {
+            showDialog<bool>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text('Atenção'),
+                content: const Text(
+                    'Os dados referente a está amostragem serão descartados e seu status ficará como pendente. \n\n Deseja continuar?'),
+                actions: [
+                  TextButton(
+                    child: const Text('Não'),
+                    onPressed: () => Navigator.of(ctx).pop(false),
+                  ),
+                  TextButton(
+                    child: const Text('Sim'),
+                    onPressed: () {
+                      submitForm(1).then((_) {
+                        Navigator.of(context).pop();
+                        Navigator.pop(context, {
+                          'type': "error",
+                          'etq': amostragemData
+                              .itemByIndex(widget.localIdAmostragem)
+                              .cod_barras
+                        });
+                      });
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.all(15),
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: TextFormField(
+                  initialValue: amostragemData
+                      .itemByIndex(widget.localIdAmostragem)
+                      .temp_amostra,
+                  onSaved: (temp_amostra) => amostragemData
+                      .items[widget.localIdAmostragem]
+                      .temp_amostra = temp_amostra,
+                  validator: (_temp_amostra) {
+                    final temp_amostra = _temp_amostra ?? '';
+
+                    if (temp_amostra.contains('.')) {
+                      return 'Favor não utilizar "."';
+                    }
+
+                    return null;
+                  },
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: false),
+                  textInputAction: TextInputAction.next,
+                  decoration: InputDecoration(
+                    filled: true,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                    fillColor: Colors.blue[50],
+                    labelText: 'Temp. Amostra',
+                    suffixIcon: const Icon(Icons.bloodtype),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: TextFormField(
+                  validator: (_temp_amostra) {
+                    final temp_amostra = _temp_amostra ?? '';
+
+                    if (temp_amostra.contains('.')) {
+                      return 'Favor não utilizar "."';
+                    }
+
+                    return null;
+                  },
+                  initialValue: amostragemData
+                      .itemByIndex(widget.localIdAmostragem)
+                      .temp_equipamento,
+                  onSaved: (temp_equipamento) => amostragemData
+                      .items[widget.localIdAmostragem]
+                      .temp_equipamento = temp_equipamento,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: false),
+                  textInputAction: TextInputAction.next,
+                  decoration: InputDecoration(
+                    filled: true,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                    fillColor: Colors.blue[50],
+                    labelText: 'Temp. Equipamento',
+                    suffixIcon: const Icon(Icons.takeout_dining_outlined),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: TextFormField(
+                  validator: (_temp_amostra) {
+                    final temp_amostra = _temp_amostra ?? '';
+
+                    if (temp_amostra.contains('.')) {
+                      return 'Favor não utilizar "."';
+                    }
+
+                    return null;
+                  },
+                  initialValue: amostragemData
+                      .itemByIndex(widget.localIdAmostragem)
+                      .temp_enrolamento,
+                  onSaved: (temp_enrolamento) => amostragemData
+                      .items[widget.localIdAmostragem]
+                      .temp_enrolamento = temp_enrolamento,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: false),
+                  textInputAction: TextInputAction.next,
+                  decoration: InputDecoration(
+                    filled: true,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                    fillColor: Colors.blue[50],
+                    labelText: 'Temp. Enrolamento',
+                    suffixIcon: const Icon(Icons.storm_rounded),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: TextFormField(
+                  validator: (_temp_amostra) {
+                    final temp_amostra = _temp_amostra ?? '';
+
+                    if (temp_amostra.contains('.')) {
+                      return 'Favor não utilizar "."';
+                    }
+
+                    return null;
+                  },
+                  initialValue: amostragemData
+                      .itemByIndex(widget.localIdAmostragem)
+                      .temp_ambiente,
+                  onSaved: (temp_ambiente) => amostragemData
+                      .items[widget.localIdAmostragem]
+                      .temp_ambiente = temp_ambiente,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: false),
+                  textInputAction: TextInputAction.next,
+                  decoration: InputDecoration(
+                    filled: true,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none,
+                    ),
+                    fillColor: Colors.blue[50],
+                    labelText: 'Temp. Ambiente',
+                    suffixIcon: const Icon(Icons.air_rounded),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: TextFormField(
+                  validator: (_temp_amostra) {
+                    final temp_amostra = _temp_amostra ?? '';
+
+                    if (temp_amostra.contains('.')) {
+                      return 'Favor não utilizar "."';
+                    }
+
+                    return null;
+                  },
+                  initialValue: amostragemData
+                      .itemByIndex(widget.localIdAmostragem)
+                      .umidade_relativa,
+                  onSaved: (umidade_relativa) => amostragemData
+                      .items[widget.localIdAmostragem]
+                      .umidade_relativa = umidade_relativa,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: false),
+                  textInputAction: TextInputAction.next,
+                  decoration: InputDecoration(
+                    filled: true,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none,
+                    ),
+                    fillColor: Colors.blue[50],
+                    labelText: 'Umidade Relativa',
+                    suffixIcon: const Icon(Icons.water_damage_outlined),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: TextFormField(
+                  initialValue: amostragemData
+                      .itemByIndex(widget.localIdAmostragem)
+                      .observacao,
+                  onSaved: (observacao) => amostragemData
+                      .items[widget.localIdAmostragem].observacao = observacao,
+                  textInputAction: TextInputAction.done,
+                  maxLines: 5,
+                  decoration: InputDecoration(
+                    filled: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary),
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    fillColor: Colors.blue[50],
+                    labelText: 'Observação',
+                    suffixIcon: const Icon(Icons.border_color_outlined),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0, bottom: 30.00),
+                child: Card(
+                  color: Colors.blue[50],
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  child: SwitchListTile(
+                      contentPadding: EdgeInsets.all(6),
+                      controlAffinity: ListTileControlAffinity.leading,
+                      value: amostragemData
+                          .itemByIndex(widget.localIdAmostragem)
+                          .equipamento_energizado!,
+                      secondary: const Icon(Icons.battery_unknown_outlined),
+                      title: const Text("Equipamento Energizado?"),
+                      onChanged: (value) {
+                        setState(() {
+                          amostragemData
+                              .itemByIndex(widget.localIdAmostragem)
+                              .equipamento_energizado = value;
+                          amostragemData.notifyListeners();
+                        });
+                      }),
+                ),
+              ),
+              ImageInputWidget(
+                onSelectImage: selectImage,
+                storedImage:
+                    amostragemData.itemByIndex(widget.localIdAmostragem).image,
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  submitForm(2).then((_) {
+                    getDevices().then((_) {
+                      showModalBottomSheet(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(15),
+                              topRight: Radius.circular(15)),
+                        ),
+                        context: context,
+                        builder: (_) {
+                          return Column(
+                            children: [
+                              Stack(children: [
+                                const SizedBox(
+                                  width: double.infinity,
+                                  height: 56.0,
+                                  child: Center(
+                                      child: Text(
+                                    "Selecione uma impressora",
+                                    style: TextStyle(fontSize: 17),
+                                  ) // Your desired title
+                                      ),
+                                ),
+                                Positioned(
+                                  left: 0.0,
+                                  top: 0.0,
+                                  child: IconButton(
+                                    icon: const Icon(
+                                        Icons.close), // Your desired icon
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                )
+                              ]),
+                              Expanded(
+                                child: bluetoothStatus == 10
+                                    ? const Center(
+                                        child: Text(
+                                          "Favor ligar o bluetooth",
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      )
+                                    : _devices.isNotEmpty
+                                        ? ListView.builder(
+                                            padding: const EdgeInsets.all(10),
+                                            itemCount: _devices.length,
+                                            itemBuilder: (ctx, index) {
+                                              return DevicesListItemWidget(
+                                                device: _devices[index].name ??
+                                                    "Dispositivo Sem Nome",
+                                                index: index,
+                                                selectDevice: selectDevice,
+                                              );
+                                            },
+                                          )
+                                        : const Center(
+                                            child: Text(
+                                              "Nenhum dispositivo encontrado!",
+                                              style: TextStyle(fontSize: 18),
+                                            ),
+                                          ),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    });
+                  });
+                },
+                child: const Icon(Icons.print_rounded, color: Colors.white),
+                style: ElevatedButton.styleFrom(
+                  elevation: 5,
+                  shape: const CircleBorder(),
+                  padding: const EdgeInsets.all(20),
+                  onPrimary: Colors.indigo[900],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void selectDevice(int index) {
+    _device = _devices[index];
+    _connect();
+    Future.delayed(const Duration(milliseconds: 300), () {
+      printPaper();
+    });
+  }
+
+  void _connect() {
+    if (_device == null) {
+    } else {
+      bluetooth.isConnected.then((isConnected) {
+        if (!isConnected!) {
+          bluetooth.connect(_device!).catchError((error) {
+            setState(() => _connected = false);
+          });
+          setState(() => _connected = true);
+        }
+      });
+    }
+  }
+
+  void _disconnect() {
+    bluetooth.disconnect();
+    setState(() => _connected = false);
+  }
+
+  printPaper() {
+    amostragemPrint!.printPage(
+        pathImageLogo!,
+        pathImageBarCode,
+        Provider.of<AmostragemModel>(
+          context,
+          listen: false,
+        ).itemByIndex(widget.localIdAmostragem),
+        Provider.of<PlanoAmostragemOnModel>(
+          context,
+          listen: false,
+        )
+            .items
+            .where((element) =>
+                element.idPlanoAmostragem == widget.idPlanoAmostragem)
+            .toList());
+    return;
+  }
+
+  Future<void> writeToFile(ByteData data, String path) {
+    final buffer = data.buffer;
+    return File(path).writeAsBytes(
+        buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+  }
+}
