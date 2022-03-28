@@ -243,11 +243,9 @@ class AmostragemModel with ChangeNotifier {
     final dataToSend = await DB.select(
         "SELECT al.*, ab.cod_barras, ab.idPlanoAmostragem FROM amostragemLater al INNER JOIN amostragemBefore ab ON al.localIdAmostragem = ab.localIdAmostragem");
 
-    print(jsonEncode(dataToSend));
-
     http.post(
       Uri.parse('${ApiRoutes.BASE_URL}/saveamostragembyplano'),
-      body: dataToSend,
+      body: jsonEncode(dataToSend),
     );
 
     await deleteAmostragem();

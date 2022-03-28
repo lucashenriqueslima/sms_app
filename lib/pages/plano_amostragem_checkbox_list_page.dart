@@ -20,14 +20,14 @@ class _PlanoAmostragemCheckboxListPageState
     extends State<PlanoAmostragemCheckboxListPage> {
   List<String> _selecteCategorys = [];
 
-  void _onCategorySelected(bool selected, category_id) {
+  void _onCategorySelected(bool selected, categoryId) {
     if (selected == true) {
       setState(() {
-        _selecteCategorys.add(category_id);
+        _selecteCategorys.add(categoryId);
       });
     } else {
       setState(() {
-        _selecteCategorys.remove(category_id);
+        _selecteCategorys.remove(categoryId);
       });
     }
   }
@@ -76,43 +76,52 @@ class _PlanoAmostragemCheckboxListPageState
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: ListView.builder(
-                          itemCount: planoData.itemsCount,
-                          itemBuilder: (ctx, index) {
-                            return Card(
-                                elevation: 4,
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 4.0),
-                                child: CheckboxListTile(
-                                    dense: true,
-                                    secondary: CircleAvatar(
-                                      radius: 30,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(6),
-                                        child: FittedBox(
-                                          child: Text(
-                                            planoData
-                                                .items[index].idPlanoAmostragem,
+                        child: planoData.items.isNotEmpty
+                            ? ListView.builder(
+                                itemCount: planoData.itemsCount,
+                                itemBuilder: (ctx, index) {
+                                  return Card(
+                                    elevation: 4,
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 4.0),
+                                    child: CheckboxListTile(
+                                      dense: true,
+                                      secondary: CircleAvatar(
+                                        radius: 30,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(6),
+                                          child: FittedBox(
+                                            child: Text(
+                                              planoData.items[index]
+                                                  .idPlanoAmostragem,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10),
-                                    title: Text(
-                                        '${planoData.items[index].razaoSocial!} - ${planoData.items[index].nomeFantasia!}'),
-                                    subtitle: Text(
-                                        '${planoData.items[index].amostrador!} | ${planoData.items[index].dataPrevista!}'),
-                                    value: _selecteCategorys.contains(planoData
-                                        .items[index].idPlanoAmostragem),
-                                    onChanged: (selected) {
-                                      _onCategorySelected(
-                                          selected!,
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 10),
+                                      title: Text(
+                                          '${planoData.items[index].razaoSocial!} - ${planoData.items[index].nomeFantasia!}'),
+                                      subtitle: Text(
+                                          '${planoData.items[index].amostrador!} | ${planoData.items[index].dataPrevista!}'),
+                                      value: _selecteCategorys.contains(
                                           planoData
-                                              .items[index].idPlanoAmostragem);
-                                    }));
-                          },
-                        ),
+                                              .items[index].idPlanoAmostragem),
+                                      onChanged: (selected) {
+                                        _onCategorySelected(
+                                            selected!,
+                                            planoData.items[index]
+                                                .idPlanoAmostragem);
+                                      },
+                                    ),
+                                  );
+                                },
+                              )
+                            : const Center(
+                                child: Text(
+                                    "Nenhum Plano de Amostragem disponivel."),
+                              ),
                       ),
                     ),
                     Directionality(

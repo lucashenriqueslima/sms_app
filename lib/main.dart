@@ -7,7 +7,7 @@ import 'package:sms_app/pages/autentication_page.dart';
 import 'models/plano_amostragem_on_model.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
