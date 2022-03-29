@@ -31,7 +31,6 @@ class _PlanoAmostragemOnListPageState extends State<PlanoAmostragemOnListPage> {
         listen: false,
       )
           .reloadPlanoAmostragemOn()
-          .then((value) {})
           .then((value) => Provider.of<AmostragemModel>(
                 context,
                 listen: false,
@@ -128,9 +127,13 @@ class _PlanoAmostragemOnListPageState extends State<PlanoAmostragemOnListPage> {
             TextButton(
               child: const Text('Sim'),
               onPressed: () async {
-                amostragemData.finishAmostragem(internetConnection);
+                final String result =
+                    await amostragemData.finishAmostragem(internetConnection);
+
                 Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => const HomePage()),
+                    MaterialPageRoute(
+                      builder: (context) => HomePage(dialog: result),
+                    ),
                     (Route<dynamic> route) => false);
               },
             ),

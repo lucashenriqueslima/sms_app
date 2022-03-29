@@ -226,31 +226,26 @@ class AmostragemModel with ChangeNotifier {
         WHERE localIdAmostragem = $localIdAmostragem''');
   }
 
-  void finishAmostragem(bool isOn) async {
-    if (!isOn) {
-      DB.update("UPDATE user SET status = 3");
-
-      DB.insert("message", {
-        "id_message": null,
-        "module": "planoAmostragem",
-        "type": "warning",
-        "message":
-            "Dados referente ao último Plano de Amostragem não foram enviados.",
-        "sub_mensage": "Quando estiver conectado, clique para envia-los."
-      });
-    }
+  Future<String> finishAmostragem(bool isOn) async {
+    if (!isOn) {}
 
     final dataToSend = await DB.select(
         "SELECT al.*, ab.cod_barras, ab.idPlanoAmostragem FROM amostragemLater al INNER JOIN amostragemBefore ab ON al.localIdAmostragem = ab.localIdAmostragem");
 
-    http.post(
-      Uri.parse('${ApiRoutes.BASE_URL}/saveamostragembyplano'),
-      body: jsonEncode(dataToSend),
-    );
+    try {
+      http.post(
+        Uri.parse('${ApiRoutes.BASE_URL}/saveamostragembyplano'),
+        body: jsonEncode(dataToSend),
+      );
+    } on SocketException catch (e) {
+      return e.toString();
+    }
 
     await deleteAmostragem();
 
     DB.update("UPDATE user SET status = 1");
+
+    return "Dados referente ao último Plano de Amostragem foram enviados com sucesso!";
   }
 
   Future<void> deleteAmostragem() async {

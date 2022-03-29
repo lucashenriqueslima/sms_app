@@ -6,9 +6,11 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, this.alert = ''}) : super(key: key);
+  const HomePage({Key? key, this.alert = '', this.dialog = ''})
+      : super(key: key);
 
   final String alert;
+  final String dialog;
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -23,6 +25,25 @@ class _HomePageState extends State<HomePage> {
           message: widget.alert,
         ),
       );
+    }
+  }
+
+  _showDialog() {
+    if (widget.dialog != '') {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Atenção'),
+              content: Text(widget.dialog),
+              actions: [
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () => Navigator.of(context).pop(false),
+                ),
+              ],
+            );
+          });
     }
   }
 
