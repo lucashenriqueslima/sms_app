@@ -74,11 +74,12 @@ CREATE TABLE user (
 
   String get _message => '''
 CREATE TABLE message (
-    id_message INTEGER PRIMARY KEY AUTO_INCREMENT, 
+    localIdMessage INTEGER PRIMARY KEY AUTO_INCREMENT, 
     module TEXT,
     type TEXT, 
     message TEXT,
-    sub_message TEXT
+    subMessage TEXT,
+    status INTEGER
 )
     ''';
 

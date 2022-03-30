@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_app/models/amostragem_model.dart';
+import 'package:sms_app/models/message_model.dart';
 import 'package:sms_app/models/plano_amostragem_model.dart';
 import 'package:sms_app/models/user_model.dart';
 import 'package:sms_app/pages/autentication_page.dart';
@@ -36,6 +37,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => AmostragemModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => MessageModel(),
         )
       ],
       child: MaterialApp(

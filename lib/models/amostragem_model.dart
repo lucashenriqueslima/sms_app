@@ -227,19 +227,28 @@ class AmostragemModel with ChangeNotifier {
   }
 
   Future<String> finishAmostragem(bool isOn) async {
-    if (!isOn) {}
+    if (!isOn) {
+      DB.insert("message", {
+        'message': 'Amostragem não finalizada',
+        'module': 'planoAmostragem',
+        'type': 'warning',
+        'sub_message':
+            'A amostragem não foi enviada, por favor, conecte-se a internet.',
+        'date': DateTime.now().toString()
+      });
+
+      DB.update("UPDATE user SET status = 3");
+
+      return "Dados referente ao último Plano de Amostragem não foram enviados,entretanto estão salvos em seu dispositivo. Por favor conecte-se a internet.";
+    }
 
     final dataToSend = await DB.select(
         "SELECT al.*, ab.cod_barras, ab.idPlanoAmostragem FROM amostragemLater al INNER JOIN amostragemBefore ab ON al.localIdAmostragem = ab.localIdAmostragem");
 
-    try {
-      http.post(
-        Uri.parse('${ApiRoutes.BASE_URL}/saveamostragembyplano'),
-        body: jsonEncode(dataToSend),
-      );
-    } on SocketException catch (e) {
-      return e.toString();
-    }
+    http.post(
+      Uri.parse('${ApiRoutes.BASE_URL}/saveamostragembyplano'),
+      body: jsonEncode(dataToSend),
+    );
 
     await deleteAmostragem();
 
