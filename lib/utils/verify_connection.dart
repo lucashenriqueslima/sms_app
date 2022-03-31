@@ -1,14 +1,12 @@
-import 'dart:io';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 class VerifyConnection {
-  Future<bool?> getConnection() async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        return true;
-      }
-    } on SocketException catch (_) {
-      return false;
+  static getConnection() async {
+    bool result = await InternetConnectionChecker().hasConnection;
+    if (result == true) {
+      print('YAY! Free cute dog pics!');
+    } else {
+      print('No internet :( Reason:');
     }
   }
 }

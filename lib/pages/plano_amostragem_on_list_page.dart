@@ -5,6 +5,7 @@ import 'package:sms_app/models/plano_amostragem_on_model.dart';
 import 'package:sms_app/pages/home_page.dart';
 import 'package:sms_app/widgets/plano_amostragem/plano_amostragem_on_list_item_widget.dart';
 import 'dart:io';
+import '../utils/verify_connection.dart';
 
 class PlanoAmostragemOnListPage extends StatefulWidget {
   const PlanoAmostragemOnListPage({Key? key, this.reloaded = false, this.paId})
@@ -58,7 +59,7 @@ class _PlanoAmostragemOnListPageState extends State<PlanoAmostragemOnListPage> {
     AmostragemModel amostragemData = Provider.of(context);
 
     Future _finishAmostragem() async {
-      final internetConnection = await getConnection();
+      bool? internetConnection = await getConnection();
 
       return showDialog<bool>(
         context: context,
@@ -196,13 +197,15 @@ class _PlanoAmostragemOnListPageState extends State<PlanoAmostragemOnListPage> {
 
   Future<bool?> getConnection() async {
     try {
-      final result = await InternetAddress.lookup('google.com');
+      final result = await InternetAddress.lookup('systrafo.com.br');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         return true;
       }
     } on SocketException catch (_) {
       return false;
     }
+
+    return false;
   }
 
   Future<bool> showDialogOnPop() {

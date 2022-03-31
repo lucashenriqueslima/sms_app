@@ -3,10 +3,13 @@ import 'package:provider/provider.dart';
 import 'package:sms_app/models/message_model.dart';
 import 'package:sms_app/pages/plano_amostragem_checkbox_list_page.dart';
 import 'package:sms_app/pages/user_page.dart';
+import 'package:sms_app/utils/verify_connection.dart';
 import 'package:sms_app/widgets/home/categories_item_widget.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:badges/badges.dart';
+
+import '../models/amostragem_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, this.alert = '', this.dialog = ''})
@@ -151,18 +154,18 @@ class _HomePageState extends State<HomePage> {
                                             return ListTile(
                                               contentPadding:
                                                   const EdgeInsets.all(5),
-                                              leading: CircleAvatar(
+                                              leading: const CircleAvatar(
                                                 radius: 30,
                                                 child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(6),
+                                                  padding: EdgeInsets.all(6),
                                                   child: FittedBox(
                                                       child: Icon(Icons
                                                           .warning_amber_rounded)),
                                                 ),
                                               ),
                                               title: Text(
-                                                "Subestação: ${messageData.items[index].message}",
+                                                messageData
+                                                    .items[index].message,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .headline3,
@@ -177,6 +180,50 @@ class _HomePageState extends State<HomePage> {
                                                       .subtitle2,
                                                 ),
                                               ),
+                                              onTap: () async {
+                                                final bool? internetConnection =
+                                                    await VerifyConnection
+                                                        .getConnection();
+                                                if (internetConnection!) {
+                                                  Provider.of<AmostragemModel>(
+                                                    context,
+                                                    listen: false,
+                                                  )
+                                                      .finishAmostragem(true)
+                                                      .then((_) {
+                                                    Provider.of<MessageModel>(
+                                                      context,
+                                                      listen: false,
+                                                    ).setReadedMessage(
+                                                        messageData.items[index]
+                                                            .localIdMessage);
+
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return AlertDialog(
+                                                            title: const Text(
+                                                                'Atenção'),
+                                                            content: Text(
+                                                                widget.dialog),
+                                                            actions: [
+                                                              TextButton(
+                                                                child:
+                                                                    const Text(
+                                                                        'OK'),
+                                                                onPressed: () =>
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop(
+                                                                            false),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        });
+                                                  });
+                                                }
+                                              },
                                             );
                                           },
                                         )

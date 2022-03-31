@@ -29,6 +29,19 @@ class MessageModel with ChangeNotifier {
         ));
       }
     });
+
+    notifyListeners();
+  }
+
+  Future<void> setReadedMessage(localIdMessage) async {
+    DB.update(
+        "UPDATE message SET status = 0 WHERE localIdMessage = $localIdMessage");
+    items
+        .where((element) => element.localIdMessage == localIdMessage)
+        .toList()[0]
+        .status = 0;
+
+    notifyListeners();
   }
 
   Future<void> deleteMessage(localIdMessage) async {

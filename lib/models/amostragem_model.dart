@@ -227,6 +227,8 @@ class AmostragemModel with ChangeNotifier {
   }
 
   Future<String> finishAmostragem(bool isOn) async {
+    print(isOn);
+
     if (!isOn) {
       DB.insert("message", {
         'message': 'Amostragem não finalizada',
@@ -234,7 +236,8 @@ class AmostragemModel with ChangeNotifier {
         'type': 'warning',
         'sub_message':
             'A amostragem não foi enviada, por favor, conecte-se a internet.',
-        'date': DateTime.now().toString()
+        'date': DateTime.now().toString(),
+        'status': 1
       });
 
       DB.update("UPDATE user SET status = 3");

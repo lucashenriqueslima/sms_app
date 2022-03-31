@@ -49,7 +49,7 @@ class DB {
     return await openDatabase(
         join(
           await getDatabasesPath(),
-          "samplemanagersystem12.db",
+          "samplemanagersystem14.db",
         ),
         version: 1,
         onCreate: _onCreate);
@@ -74,7 +74,7 @@ CREATE TABLE user (
 
   String get _message => '''
 CREATE TABLE message (
-    localIdMessage INTEGER PRIMARY KEY AUTO_INCREMENT, 
+    localIdMessage INTEGER PRIMARY KEY autoincrement, 
     module TEXT,
     type TEXT, 
     message TEXT,
